@@ -34,9 +34,10 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  http: ^1.1.0          # Thư viện gọi API
-  provider: ^6.0.5      # Quản lý trạng thái
-  cached_network_image: ^3.3.0  # Tải và lưu trữ ảnh từ URL
+  http: ^1.1.0          
+  provider: ^6.0.5      
+  cached_network_image: ^3.3.0  
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -62,8 +63,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  #   - image/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

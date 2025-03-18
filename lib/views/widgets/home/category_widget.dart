@@ -17,10 +17,9 @@ class CategoryWidget extends StatelessWidget {
           height: 60,
           decoration: BoxDecoration(
             color: Colors.white,
-            shape: BoxShape.circle, // Bo tròn hoàn toàn thành hình tròn
+            shape: BoxShape.circle,
           ),
           child: ClipOval(
-            // Sử dụng ClipOval để bo tròn hình ảnh
             child: CachedNetworkImage(
               imageUrl: category.imageUrl,
               width: 60,
@@ -33,6 +32,9 @@ class CategoryWidget extends StatelessWidget {
                 size: 30,
                 color: Colors.grey[400],
               ),
+              maxHeightDiskCache: 1000, // Giới hạn kích thước cache
+              errorListener: (dynamic error) =>
+                  print('Error loading image: $error'), // In lỗi chi tiết
             ),
           ),
         ),

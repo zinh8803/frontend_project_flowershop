@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_appflowershop/controllers/category_controller.dart';
-import '../widgets/home/header_placeholder_widget.dart';
+import '../widgets/home/header_banner_widget.dart';
 import '../widgets/home/category_list_widget.dart';
 import '../widgets/home/search_bar_widget.dart';
 
@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeaderPlaceholderWidget(),
+            HeaderBannerWidget(),
             Consumer<CategoryController>(
               builder: (context, controller, child) {
                 if (controller.isLoading) {

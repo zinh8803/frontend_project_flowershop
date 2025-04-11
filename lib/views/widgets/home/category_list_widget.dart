@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_appflowershop/model/category.dart';
-import 'category_widget.dart'; // Sử dụng CategoryWidget thay vì CategoryCard
+import 'package:frontend_appflowershop/data/models/category.dart';
+import 'category_widget.dart'; 
 
 class CategoryListWidget extends StatelessWidget {
   final String title;
@@ -25,8 +25,8 @@ class CategoryListWidget extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 16),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4, // 4 danh mục trên 1 hàng
-            childAspectRatio: 0.8, // Tỷ lệ chiều cao/chiều rộng
+            crossAxisCount: 4, 
+            childAspectRatio: 0.8, 
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_appflowershop/model/category.dart';
+import 'package:frontend_appflowershop/data/models/category.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class CategoryCard extends StatelessWidget {

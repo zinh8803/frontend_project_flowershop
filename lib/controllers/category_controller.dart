@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_appflowershop/model/category.dart';
-import 'package:frontend_appflowershop/services/Category/api_category.dart';
+import 'package:frontend_appflowershop/data/models/category.dart';
+import 'package:frontend_appflowershop/data/services/Category/api_category.dart';
 
 class CategoryController with ChangeNotifier {
   List<CategoryModel> _categories = [];

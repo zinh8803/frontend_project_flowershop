@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/bloc/category/category_bloc.dart';
+import 'package:frontend_appflowershop/bloc/category/category_event.dart';
+import 'package:frontend_appflowershop/bloc/category/category_state.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_appflowershop/controllers/category_controller.dart';
 import '../widgets/home/header_banner_widget.dart';
@@ -6,8 +10,13 @@ import '../widgets/home/category_list_widget.dart';
 import '../widgets/home/search_bar_widget.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    // Gửi sự kiện FetchCategoriesEvent khi HomeScreen được khởi tạo
+    context.read<CategoryBloc>().add(FetchCategoriesEvent());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -15,7 +24,7 @@ class HomeScreen extends StatelessWidget {
         title: SearchBarWidget(),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Colors.red),
+            icon: const Icon(Icons.shopping_cart, color: Colors.red),
             onPressed: () {},
           ),
         ],
@@ -24,36 +33,35 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             HeaderBannerWidget(),
-            Consumer<CategoryController>(
-              builder: (context, controller, child) {
-                if (controller.isLoading) {
-                  return Center(child: CircularProgressIndicator());
+            BlocBuilder<CategoryBloc, CategoryState>(
+              builder: (context, state) {
+                if (state is CategoryLoading) {
+                  return const Center(child: CircularProgressIndicator());
                 }
-                if (controller.errorMessage != null) {
-                  return Center(child: Text('Lỗi: ${controller.errorMessage}'));
+                if (state is CategoryError) {
+                  return Center(child: Text('Lỗi: ${state.message}'));
                 }
-                if (controller.categories.isEmpty) {
-                  return Center(child: Text('Không có danh mục nào'));
+                if (state is CategoryLoaded) {
+                  if (state.categories.isEmpty) {
+                    return const Center(child: Text('Không có danh mục nào'));
+                  }
+                  return Column(
+                    children: [
+                      CategoryListWidget(
+                        title: 'Danh sách nhóm sản phẩm',
+                        categories: state.categories,
+                      ),
+                    ],
+                  );
                 }
-                return Column(
-                  children: [
-                    CategoryListWidget(
-                      title: 'Danh sách nhóm sản phẩm',
-                      categories: controller.categories,
-                    ),
-                    CategoryListWidget(
-                      title: 'Danh sách nhóm sản phẩm',
-                      categories: controller.categories,
-                    ),
-                  ],
-                );
+                return const SizedBox(); // Trạng thái ban đầu (CategoryInitial)
               },
             ),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),

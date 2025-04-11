@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend_appflowershop/model/category.dart';
+import 'package:frontend_appflowershop/data/models/category.dart';
 
 class CategoryWidget extends StatelessWidget {
   final CategoryModel category;
@@ -32,9 +32,9 @@ class CategoryWidget extends StatelessWidget {
                 size: 30,
                 color: Colors.grey[400],
               ),
-              maxHeightDiskCache: 1000, // Giới hạn kích thước cache
+              maxHeightDiskCache: 1000, 
               errorListener: (dynamic error) =>
-                  print('Error loading image: $error'), // In lỗi chi tiết
+                  print('Error loading image: $error'), 
             ),
           ),
         ),

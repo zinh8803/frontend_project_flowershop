@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_appflowershop/model/product.dart';
-import 'package:frontend_appflowershop/services/Product/api_product.dart';
+import 'package:frontend_appflowershop/data/models/product.dart';
+import 'package:frontend_appflowershop/data/services/Product/api_product.dart';
 
 class ProductController extends ChangeNotifier {
   final ApiService apiService = ApiService();

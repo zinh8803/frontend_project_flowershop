@@ -11,6 +11,8 @@ import '../widgets/home/header_banner_widget.dart';
 import '../widgets/home/category_list_widget.dart';
 import '../widgets/home/product_list_widget.dart';
 import '../widgets/home/search_bar_widget.dart';
+import 'category_tab_screen.dart';
+import 'user_profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +22,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -27,24 +31,19 @@ class _HomeScreenState extends State<HomeScreen> {
     context.read<ProductBloc>().add(FetchProductsEvent());
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title:  SearchBarWidget(),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart, color: Colors.red),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  List<Widget> _buildScreens() {
+    return [
+      // Tab Home
+      SingleChildScrollView(
         child: Column(
           children: [
-             HeaderBannerWidget(),
+            HeaderBannerWidget(),
             BlocBuilder<CategoryBloc, CategoryState>(
               builder: (context, categoryState) {
                 if (categoryState is CategoryLoading) {
@@ -95,18 +94,41 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      const CategoryTabScreen(),
+
+      const Center(child: Text('Tìm kiếm - Chưa triển khai')),
+      const UserProfileScreen(),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: SearchBarWidget(),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart, color: Colors.red),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: _buildScreens()[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.category), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
         ],
+        currentIndex: _selectedIndex,
         selectedItemColor: Colors.pink,
         unselectedItemColor: Colors.grey,
         showSelectedLabels: false,
         showUnselectedLabels: false,
+        onTap: _onItemTapped, // Xử lý khi bấm vào tab
       ),
     );
   }

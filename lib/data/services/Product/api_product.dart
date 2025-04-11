@@ -53,4 +53,35 @@ class ApiService {
       rethrow;
     }
   }
+
+  Future<List<ProductModel>> getProductsByCategory(int categoryId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('${Constants.baseUrl}/products/category/$categoryId'),
+      );
+
+      print(
+          'Fetching products by category from: ${Constants.baseUrl}/products/category/$categoryId');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['status'] == 200) {
+          List<dynamic> productsJson = jsonResponse['data'];
+          return productsJson
+              .map((json) => ProductModel.fromJson(json))
+              .toList();
+        } else {
+          throw Exception('API returned error: ${jsonResponse['message']}');
+        }
+      } else {
+        throw Exception(
+            'Failed to load products by category: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print('Error fetching products by category: $e');
+      rethrow;
+    }
+  }
 }

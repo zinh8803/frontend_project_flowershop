@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 listener: (context, state) async {
                   if (state is AuthSuccess) {
                     // Lưu token vào SharedPreferences
-                    await _preferenceService.saveToken(state.user.token);
+                    await PreferenceService.saveToken(state.user.token);
 
                     // Hiển thị thông báo
                     ScaffoldMessenger.of(context).showSnackBar(

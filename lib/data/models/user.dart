@@ -33,11 +33,26 @@ class UserModel {
       avatar: json['avatar'],
       phoneNumber: json['phone_number'],
       address: json['address'],
-      isLoggedIn: json['is_logged_in'],
+      isLoggedIn: json['is_logged_in'] == 1,
       lastLoginAt: json['last_login_at'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
       token: token,
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'avatar': avatar,
+      'phone_number': phoneNumber,
+      'address': address,
+      'is_logged_in': isLoggedIn ? 1 : 0,
+      'last_login_at': lastLoginAt,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'token': token,
+    };
   }
 }

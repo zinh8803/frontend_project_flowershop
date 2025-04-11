@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_appflowershop/data/models/category.dart';
-import 'category_widget.dart'; 
+import '../../../data/models/category.dart';
+import '../../screens/category_products_screen.dart';
 
 class CategoryListWidget extends StatelessWidget {
   final String title;
   final List<CategoryModel> categories;
 
-  CategoryListWidget({required this.title, required this.categories});
+  const CategoryListWidget(
+      {super.key, required this.title, required this.categories});
 
   @override
   Widget build(BuildContext context) {
@@ -17,23 +18,56 @@ class CategoryListWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Text(
             title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4, 
-            childAspectRatio: 0.8, 
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    // Điều hướng đến CategoryProductsScreen khi bấm vào danh mục
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CategoryProductsScreen(),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          category.imageUrl,
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        category.name,
+                        style: const TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            return CategoryWidget(category: categories[index]);
-          },
         ),
       ],
     );

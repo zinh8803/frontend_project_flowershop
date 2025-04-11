@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/home/login_screen.dart';
 import 'bloc/auth/auth_bloc.dart';
 import 'bloc/category/category_bloc.dart';
 import 'data/services/user/api_service.dart' as userApiService; 
 import 'data/services/Category/api_category.dart' as categoryApiService; 
+import 'data/services/Product/api_product.dart' as productApiService; 
 import 'data/repositories/auth_repository.dart';
 import 'utils/preference_service.dart';
+import 'bloc/product/product_detail/product_detail_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +23,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final userApi = userApiService.ApiService(); 
     final categoryApi = categoryApiService.ApiService(); 
+    final productApi = productApiService.ApiService();
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthRepository(userApi)),
@@ -31,6 +36,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => CategoryBloc(categoryApi),
+          ),
+          BlocProvider(
+            create: (context) => ProductBloc(productApi),
+          ),
+          BlocProvider(
+            create: (context) => ProductDetailBloc(productApi),
           ),
         ],
         child: MaterialApp(

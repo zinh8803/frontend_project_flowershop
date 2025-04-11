@@ -26,4 +26,31 @@ class ApiService {
       throw Exception("Lỗi: $e");
     }
   }
+
+  Future<ProductModel> getProductDetail(int productId) async {
+    try {
+      final response =
+          await http.get(Uri.parse('${Constants.baseUrl}/products/$productId'));
+
+      print(
+          'Fetching product detail from: ${Constants.baseUrl}/products/$productId');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['status'] == 200) {
+          return ProductModel.fromJson(jsonResponse['data']);
+        } else {
+          throw Exception('API returned error: ${jsonResponse['message']}');
+        }
+      } else {
+        throw Exception(
+            'Failed to load product detail: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print('Error fetching product detail: $e');
+      rethrow;
+    }
+  }
 }

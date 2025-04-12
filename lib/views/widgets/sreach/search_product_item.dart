@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import '../../../data/models/product.dart';
 import '../../screens/product_detail_screen.dart';
 
@@ -8,6 +10,8 @@ class SearchProductItem extends StatelessWidget {
   const SearchProductItem({super.key, required this.product});
 
   void _addToCart(BuildContext context) {
+    final cartService = context.read<CartService>();
+    cartService.addToCart(product);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product.name} đã được thêm vào giỏ hàng'),

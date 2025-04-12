@@ -5,9 +5,10 @@ import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.da
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
+import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/home/login_screen.dart';
-import 'bloc/auth/auth_bloc.dart';
+import 'bloc/auth/Login/auth_bloc.dart';
 import 'bloc/category/category_bloc.dart';
 import 'data/services/user/api_service.dart' as userApiService;
 import 'data/services/Category/api_category.dart' as categoryApiService;
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => SearchBloc(productApi),
           ),
+          RepositoryProvider(create: (context) => CartService())
         ],
         child: MaterialApp(
           home: FutureBuilder<bool>(

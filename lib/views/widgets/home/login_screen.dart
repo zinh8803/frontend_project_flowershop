@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend_appflowershop/bloc/auth/auth_bloc.dart';
-import 'package:frontend_appflowershop/bloc/auth/auth_event.dart';
-import 'package:frontend_appflowershop/bloc/auth/auth_state.dart';
+import 'package:frontend_appflowershop/bloc/auth/Login/auth_bloc.dart';
+import 'package:frontend_appflowershop/bloc/auth/Login/auth_event.dart';
+import 'package:frontend_appflowershop/bloc/auth/Login/auth_state.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/login/login_form.dart';
 import 'package:frontend_appflowershop/views/widgets/login/register_link.dart';
@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _preferenceService = PreferenceService();
 
   @override
   void dispose() {
@@ -40,17 +39,14 @@ class _LoginScreenState extends State<LoginScreen> {
               BlocListener<AuthBloc, AuthState>(
                 listener: (context, state) async {
                   if (state is AuthSuccess) {
-                    // Lưu token vào SharedPreferences
                     await PreferenceService.saveToken(state.user.token);
 
-                    // Hiển thị thông báo
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                           content:
                               Text('Đăng nhập thành công: ${state.user.name}')),
                     );
 
-                    // Điều hướng sang HomeScreen
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),

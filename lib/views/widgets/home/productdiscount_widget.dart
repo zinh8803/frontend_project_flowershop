@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import 'package:frontend_appflowershop/views/screens/product_detail_screen.dart';
 import '../../../data/models/product.dart';
 
@@ -6,6 +8,16 @@ class ProductdiscountWidget extends StatelessWidget {
   final ProductModel product;
 
   const ProductdiscountWidget({super.key, required this.product});
+  void _addToCart(BuildContext context) {
+    final cartService = context.read<CartService>();
+    cartService.addToCart(product);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${product.name} đã được thêm vào giỏ hàng'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +76,15 @@ class ProductdiscountWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.add_circle_outline), // nút cộng
+              IconButton(
+                icon: Icon(
+                  Icons.add_circle_outline,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  _addToCart(context);
+                },
+              ),
             ],
           ),
         ),

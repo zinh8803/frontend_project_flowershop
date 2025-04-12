@@ -10,7 +10,7 @@ class HeaderBannerWidget extends StatelessWidget {
         image: DecorationImage(
           image: NetworkImage(
             'https://hoayeuthuong.com/cms-images/banner/434445_only-rose.jpg',
-          ), // URL hình ảnh banner
+          ),
           fit: BoxFit.cover,
         ),
       ),

@@ -22,6 +22,26 @@ class ApiService {
     }
   }
 
+  Future<UserModel> register(String name, String email, String password) async {
+    final String url = "${Constants.baseUrl}/register";
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return UserModel.fromJson(jsonData['data'], jsonData['token']);
+    } else {
+      throw Exception('Đăng ký thất bại: ${response.reasonPhrase}');
+    }
+  }
+
   Future<UserModel> getUserProfile() async {
     try {
       final token = await PreferenceService.getToken();

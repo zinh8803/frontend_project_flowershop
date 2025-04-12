@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_detail/product_detail_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_detail/product_detail_event.dart';
 import 'package:frontend_appflowershop/bloc/product/product_detail/product_detail_state.dart';
-
-import '../../data/models/product.dart';
+import 'package:frontend_appflowershop/data/models/product.dart';
+import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final int productId;
@@ -22,6 +22,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     context
         .read<ProductDetailBloc>()
         .add(FetchProductDetailEvent(widget.productId));
+  }
+
+  void _addToCart(BuildContext context, ProductModel product) {
+    final cartService = context.read<CartService>();
+    cartService.addToCart(product);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${product.name} đã được thêm vào giỏ hàng'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -149,33 +160,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           return const Center(child: Text('Không tìm thấy sản phẩm'));
         },
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.grey),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text('Thêm vào giỏ'),
+      bottomNavigationBar: BlocBuilder<ProductDetailBloc, ProductDetailState>(
+        builder: (context, state) {
+          if (state is ProductDetailLoaded) {
+            final product = state.product;
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        _addToCart(context, product);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.grey),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text('Thêm vào giỏ'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text('Quay lại'),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text('Mua ngay'),
-              ),
-            ),
-          ],
-        ),
+            );
+          }
+          return const SizedBox();
+        },
       ),
     );
   }

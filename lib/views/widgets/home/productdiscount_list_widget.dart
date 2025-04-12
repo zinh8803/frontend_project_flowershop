@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_appflowershop/views/widgets/home/productdiscount_widget.dart';
 import '../../../data/models/product.dart';
-import 'product_widget.dart';
 
 class ProductListdiscountWidget extends StatelessWidget {
   final String title;

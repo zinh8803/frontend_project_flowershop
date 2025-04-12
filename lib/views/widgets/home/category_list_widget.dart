@@ -33,7 +33,6 @@ class CategoryListWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16),
                 child: GestureDetector(
                   onTap: () {
-                    // Điều hướng đến CategoryProductsScreen khi bấm vào danh mục
                     Navigator.push(
                       context,
                       MaterialPageRoute(

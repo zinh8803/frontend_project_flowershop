@@ -6,9 +6,9 @@ import 'package:frontend_appflowershop/bloc/product/product_list/product_state.d
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_event.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_state.dart';
+import 'package:frontend_appflowershop/views/screens/cart_screen.dart';
 import 'package:frontend_appflowershop/views/screens/search_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/home/productdiscount_list_widget.dart';
-import 'package:frontend_appflowershop/views/widgets/home/productdiscount_widget.dart';
 import '../../bloc/category/category_bloc.dart';
 import '../../bloc/category/category_event.dart';
 import '../../bloc/category/category_state.dart';
@@ -150,7 +150,14 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.red),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CartScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),

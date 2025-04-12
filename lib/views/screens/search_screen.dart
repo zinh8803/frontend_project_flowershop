@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_state.dart';
 import 'package:frontend_appflowershop/views/widgets/sreach/search_product_item.dart';
-import '../widgets/home/product_widget.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});

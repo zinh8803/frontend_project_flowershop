@@ -9,7 +9,6 @@ import '../../bloc/category/category_event.dart';
 import '../../bloc/category/category_state.dart';
 
 import '../../data/models/category.dart';
-import '../widgets/category_products/product_widget.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   const CategoryProductsScreen({super.key});

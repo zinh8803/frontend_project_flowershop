@@ -4,7 +4,6 @@ import 'package:frontend_appflowershop/bloc/category/category_product/category_p
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_event.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_state.dart';
 import 'package:frontend_appflowershop/views/widgets/category_products/category_product_item.dart';
-import 'package:frontend_appflowershop/views/widgets/home/product_widget.dart';
 import '../../bloc/category/category_bloc.dart';
 import '../../bloc/category/category_event.dart';
 import '../../bloc/category/category_state.dart';

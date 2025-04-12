@@ -7,13 +7,12 @@ import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.d
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
 import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
-import 'package:frontend_appflowershop/views/widgets/home/login_screen.dart';
+import 'package:frontend_appflowershop/views/screens/login_screen.dart';
 import 'bloc/auth/Login/auth_bloc.dart';
 import 'bloc/category/category_bloc.dart';
 import 'data/services/user/api_service.dart' as userApiService;
 import 'data/services/Category/api_category.dart' as categoryApiService;
 import 'data/services/Product/api_product.dart' as productApiService;
-import 'data/repositories/auth_repository.dart';
 import 'utils/preference_service.dart';
 import 'bloc/product/product_detail/product_detail_bloc.dart';
 
@@ -50,12 +49,13 @@ class MyApp extends StatelessWidget {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => AuthRepository(userApi)),
+        RepositoryProvider(create: (context) => userApi),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => AuthBloc(context.read<AuthRepository>()),
+            create: (context) =>
+                AuthBloc(context.read<userApiService.ApiService>()),
           ),
           BlocProvider(
             create: (context) => CategoryBloc(categoryApi),

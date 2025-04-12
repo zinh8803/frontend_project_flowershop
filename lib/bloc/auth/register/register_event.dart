@@ -1,9 +1,13 @@
 abstract class RegisterEvent {}
 
 class RegisterSubmitted extends RegisterEvent {
+  final String name;
   final String email;
   final String password;
-  final String name;
 
-  RegisterSubmitted(this.email, this.password, this.name);
+  RegisterSubmitted({
+    required this.name,
+    required this.email,
+    required this.password,
+  });
 }

@@ -33,12 +33,19 @@ class ApiService {
         'password': password,
       }),
     );
-
-    if (response.statusCode == 200) {
+    print('Register response: ${response.statusCode}, ${response.body}');
+    if (response.statusCode == 201) {
       final jsonData = jsonDecode(response.body);
-      return UserModel.fromJson(jsonData['data'], jsonData['token']);
+      if (jsonData['status'] == 201) {
+        return UserModel.fromJson(jsonData['user'], jsonData['token']);
+      } else {
+        throw Exception('Đăng ký thất bại: ${jsonData['message']}');
+      }
+    } else if (response.statusCode == 422) {
+      final jsonData = jsonDecode(response.body);
+      throw Exception('Email đã tồn tại: ${jsonData['message']}');
     } else {
-      throw Exception('Đăng ký thất bại: ${response.reasonPhrase}');
+      throw ('Email đã tồn tại');
     }
   }
 

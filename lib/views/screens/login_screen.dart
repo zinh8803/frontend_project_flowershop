@@ -5,7 +5,7 @@ import 'package:frontend_appflowershop/bloc/auth/Login/auth_event.dart';
 import 'package:frontend_appflowershop/bloc/auth/Login/auth_state.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/login/login_form.dart';
-import 'package:frontend_appflowershop/views/widgets/login/register_link.dart';
+import 'package:frontend_appflowershop/views/widgets/register/register_link.dart';
 import 'package:frontend_appflowershop/views/widgets/login/login_button.dart';
 import 'package:frontend_appflowershop/utils/preference_service.dart';
 
@@ -42,9 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     await PreferenceService.saveToken(state.user.token);
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text('Đăng nhập thành công: ${state.user.name}')),
+                      SnackBar(content: Text('Đăng nhập thành công')),
                     );
 
                     Navigator.pushReplacement(
@@ -104,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .showSnackBar(
                                         const SnackBar(
                                             content:
-                                                Text('Biểu mẫu chưa sẵn sàng')),
+                                                Text('nhập đầy đủ thông tin')),
                                       );
                                     }
                                   });

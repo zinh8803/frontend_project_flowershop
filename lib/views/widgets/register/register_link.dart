@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_appflowershop/views/widgets/home/register_screen.dart';
+import 'package:frontend_appflowershop/views/widgets/register/register_screen.dart';
 
 class RegisterLink extends StatelessWidget {
   const RegisterLink({super.key});
@@ -10,7 +10,7 @@ class RegisterLink extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const RegisterPage()),
+          MaterialPageRoute(builder: (context) =>  RegisterPage()),
         );
       },
       child: const Text(

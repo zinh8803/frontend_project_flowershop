@@ -3,6 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_event.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_state.dart';
+import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
+import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_event.dart';
+import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_state.dart';
+import 'package:frontend_appflowershop/views/screens/search_screen.dart';
+import 'package:frontend_appflowershop/views/widgets/home/productdiscount_list_widget.dart';
+import 'package:frontend_appflowershop/views/widgets/home/productdiscount_widget.dart';
 import '../../bloc/category/category_bloc.dart';
 import '../../bloc/category/category_event.dart';
 import '../../bloc/category/category_state.dart';
@@ -10,7 +16,7 @@ import '../../bloc/category/category_state.dart';
 import '../widgets/home/header_banner_widget.dart';
 import '../widgets/home/category_list_widget.dart';
 import '../widgets/home/product_list_widget.dart';
-import '../widgets/home/search_bar_widget.dart';
+import '../widgets/sreach/search_bar_widget.dart';
 import 'category_tab_screen.dart';
 import 'user_profile_screen.dart';
 
@@ -29,11 +35,20 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     context.read<CategoryBloc>().add(FetchCategoriesEvent());
     context.read<ProductBloc>().add(FetchProductsEvent());
+    context
+        .read<ProductListDiscountBloc>()
+        .add(FetchProductListDiscountEvent());
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  void _onSearch() {
+    setState(() {
+      _selectedIndex = 2;
     });
   }
 
@@ -85,6 +100,30 @@ class _HomeScreenState extends State<HomeScreen> {
                           return const SizedBox();
                         },
                       ),
+                      BlocBuilder<ProductListDiscountBloc,
+                          ProductListDiscountState>(
+                        builder: (context, productState) {
+                          if (productState is ProductListDiscountLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (productState is ProductListDiscountError) {
+                            return Center(
+                                child: Text('Lỗi: ${productState.message}'));
+                          }
+                          if (productState is ProductListDiscountLoaded) {
+                            if (productState.products.isEmpty) {
+                              return const Center(
+                                  child: Text('Không có sản phẩm nào'));
+                            }
+                            return ProductListdiscountWidget(
+                              title: 'Danh sách sản phẩm giảm giá ',
+                              products: productState.products,
+                            );
+                          }
+                          return const SizedBox();
+                        },
+                      ),
                     ],
                   );
                 }
@@ -96,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       const CategoryTabScreen(),
 
-      const Center(child: Text('Tìm kiếm - Chưa triển khai')),
+      const SearchScreen(),
       const UserProfileScreen(),
     ];
   }
@@ -107,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: SearchBarWidget(),
+        title: SearchBarWidget(onSearch: _onSearch),
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.red),

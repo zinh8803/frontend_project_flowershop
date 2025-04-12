@@ -3,7 +3,7 @@ import 'package:frontend_appflowershop/data/models/product.dart';
 import 'package:frontend_appflowershop/data/services/Product/api_product.dart';
 
 class ProductController extends ChangeNotifier {
-  final ApiService apiService = ApiService();
+  final ApiService_product apiService = ApiService_product();
   List<ProductModel> _products = [];
   bool _isLoading = true;
 

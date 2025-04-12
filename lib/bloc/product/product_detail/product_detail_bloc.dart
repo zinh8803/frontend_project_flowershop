@@ -4,7 +4,7 @@ import 'product_detail_event.dart';
 import 'product_detail_state.dart';
 
 class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
-  final ApiService apiService;
+  final ApiService_product apiService;
 
   ProductDetailBloc(this.apiService) : super(ProductDetailInitial()) {
     on<FetchProductDetailEvent>((event, emit) async {

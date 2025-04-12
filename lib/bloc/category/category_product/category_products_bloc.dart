@@ -5,7 +5,7 @@ import 'category_products_state.dart';
 
 class CategoryProductsBloc
     extends Bloc<CategoryProductsEvent, CategoryProductsState> {
-  final ApiService apiService;
+  final ApiService_product apiService;
 
   CategoryProductsBloc(this.apiService) : super(CategoryProductsInitial()) {
     on<FetchCategoryProductsEvent>((event, emit) async {

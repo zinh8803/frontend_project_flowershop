@@ -28,7 +28,7 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching categories: $e');
-      rethrow; // Ném lại lỗi để Controller xử lý
+      rethrow; 
     }
   }
 }

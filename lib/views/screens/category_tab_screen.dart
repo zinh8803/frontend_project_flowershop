@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_event.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_state.dart';
+import 'package:frontend_appflowershop/views/widgets/category_products/category_product_item.dart';
+import 'package:frontend_appflowershop/views/widgets/home/product_widget.dart';
 import '../../bloc/category/category_bloc.dart';
 import '../../bloc/category/category_event.dart';
 import '../../bloc/category/category_state.dart';
-
-import '../../data/models/category.dart';
-import '../widgets/category_products/product_widget.dart';
 
 class CategoryTabScreen extends StatefulWidget {
   const CategoryTabScreen({super.key});
@@ -18,32 +17,20 @@ class CategoryTabScreen extends StatefulWidget {
 }
 
 class _CategoryTabScreenState extends State<CategoryTabScreen> {
-  CategoryModel? _selectedCategory;
+  int _selectedCategoryIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    // Lấy danh sách danh mục
     context.read<CategoryBloc>().add(FetchCategoriesEvent());
-  }
-
-  void _onCategorySelected(CategoryModel category) {
-    setState(() {
-      _selectedCategory = category;
-    });
-    // Lấy danh sách sản phẩm của danh mục được chọn
-    context
-        .read<CategoryProductsBloc>()
-        .add(FetchCategoryProductsEvent(category.id));
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Danh sách danh mục bên trái
         Container(
-          width: 100, // Chiều rộng cố định cho danh sách danh mục
+          width: 100,
           color: Colors.grey[200],
           child: BlocBuilder<CategoryBloc, CategoryState>(
             builder: (context, state) {
@@ -60,23 +47,33 @@ class _CategoryTabScreenState extends State<CategoryTabScreen> {
                 return ListView.builder(
                   itemCount: state.categories.length,
                   itemBuilder: (context, index) {
-                    final category = state.categories[index];
-                    final isSelected = _selectedCategory?.id == category.id;
-                    return GestureDetector(
-                      onTap: () => _onCategorySelected(category),
+                    bool isSelected = _selectedCategoryIndex == index;
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          _selectedCategoryIndex = index;
+                        });
+                        context.read<CategoryProductsBloc>().add(
+                              FetchCategoryProductsEvent(
+                                state.categories[index].id,
+                              ),
+                            );
+                      },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16, horizontal: 8),
                         color: isSelected ? Colors.white : Colors.grey[200],
-                        child: Text(
-                          category.name,
-                          style: TextStyle(
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: isSelected ? Colors.black : Colors.grey[700],
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Center(
+                          child: Text(
+                            state.categories[index].name,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: isSelected ? Colors.red : Colors.black,
+                              fontSize: 14,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     );
@@ -87,13 +84,9 @@ class _CategoryTabScreenState extends State<CategoryTabScreen> {
             },
           ),
         ),
-        // Danh sách sản phẩm bên phải
         Expanded(
           child: BlocBuilder<CategoryProductsBloc, CategoryProductsState>(
             builder: (context, state) {
-              if (_selectedCategory == null) {
-                return const Center(child: Text('Vui lòng chọn danh mục'));
-              }
               if (state is CategoryProductsLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -102,25 +95,23 @@ class _CategoryTabScreenState extends State<CategoryTabScreen> {
               }
               if (state is CategoryProductsLoaded) {
                 if (state.products.isEmpty) {
-                  return const Center(
-                      child: Text('Không có sản phẩm nào trong danh mục này'));
+                  return const Center(child: Text('Không có sản phẩm nào'));
                 }
                 return GridView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(8),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // 2 cột
-                    crossAxisSpacing: 16, // Khoảng cách ngang giữa các sản phẩm
-                    mainAxisSpacing: 16, // Khoảng cách dọc giữa các sản phẩm
-                    childAspectRatio:
-                        0.7, // Tỷ lệ chiều rộng/chiều cao của mỗi sản phẩm
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 0.65,
                   ),
                   itemCount: state.products.length,
                   itemBuilder: (context, index) {
-                    return ProductWidget(product: state.products[index]);
+                    return CategoryProductItem(product: state.products[index]);
                   },
                 );
               }
-              return const SizedBox();
+              return const Center(child: Text('Chọn danh mục để xem sản phẩm'));
             },
           ),
         ),

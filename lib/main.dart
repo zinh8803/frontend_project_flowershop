@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.dart';
+import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
+import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/home/login_screen.dart';
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final userApi = userApiService.ApiService();
     final categoryApi = categoryApiService.ApiService();
-    final productApi = productApiService.ApiService();
+    final productApi = productApiService.ApiService_product();
 
     return MultiRepositoryProvider(
       providers: [
@@ -61,6 +63,9 @@ class MyApp extends StatelessWidget {
             create: (context) => ProductBloc(productApi),
           ),
           BlocProvider(
+            create: (context) => ProductListDiscountBloc(productApi),
+          ),
+          BlocProvider(
             create: (context) => ProductDetailBloc(productApi),
           ),
           BlocProvider(
@@ -68,6 +73,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => UserProfileBloc(userApi, PreferenceService()),
+          ),
+          BlocProvider(
+            create: (context) => SearchBloc(productApi),
           ),
         ],
         child: MaterialApp(

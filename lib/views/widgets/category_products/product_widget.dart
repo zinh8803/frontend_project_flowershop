@@ -1,92 +1,119 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/product.dart';
-import '../../screens/product_detail_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/bloc/category/category_bloc.dart';
+import 'package:frontend_appflowershop/bloc/category/category_event.dart';
+import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
+import 'package:frontend_appflowershop/bloc/category/category_product/category_products_event.dart';
+import 'package:frontend_appflowershop/bloc/category/category_product/category_products_state.dart';
+import 'package:frontend_appflowershop/bloc/category/category_state.dart';
+import 'package:frontend_appflowershop/views/widgets/home/product_widget.dart';
 
-class ProductWidget extends StatelessWidget {
-  final ProductModel product;
+class CategoryTabScreen extends StatefulWidget {
+  const CategoryTabScreen({super.key});
 
-  const ProductWidget({super.key, required this.product});
+  @override
+  State<CategoryTabScreen> createState() => _CategoryTabScreenState();
+}
+
+class _CategoryTabScreenState extends State<CategoryTabScreen> {
+  int _selectedCategoryIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CategoryBloc>().add(FetchCategoriesEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductDetailScreen(productId: product.id),
-          ),
-        );
-      },
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Hình ảnh sản phẩm
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-              child: Image.network(
-                product.imageUrl,
-                width: double.infinity,
-                height: 150, // Chiều cao cố định cho hình ảnh
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.error),
-              ),
-            ),
-            // Thông tin sản phẩm
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${product.finalPrice}đ',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Nút "+"
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.add_circle_outline,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    // TODO: Thêm logic để thêm sản phẩm vào giỏ hàng
+    return Column(
+      children: [
+        // Danh sách danh mục (ngang)
+        BlocBuilder<CategoryBloc, CategoryState>(
+          builder: (context, state) {
+            if (state is CategoryLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is CategoryError) {
+              return Center(child: Text('Lỗi: ${state.message}'));
+            }
+            if (state is CategoryLoaded) {
+              if (state.categories.isEmpty) {
+                return const Center(child: Text('Không có danh mục nào'));
+              }
+              return SizedBox(
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.categories.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ChoiceChip(
+                        label: Text(state.categories[index].name),
+                        selected: _selectedCategoryIndex == index,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() {
+                              _selectedCategoryIndex = index;
+                            });
+                            context.read<CategoryProductsBloc>().add(
+                                  FetchCategoryProductsEvent(
+                                    state.categories[index].id,
+                                  ),
+                                );
+                          }
+                        },
+                        selectedColor: Colors.pink[100],
+                        backgroundColor: Colors.grey[200],
+                        labelStyle: TextStyle(
+                          color: _selectedCategoryIndex == index
+                              ? Colors.pink
+                              : Colors.black,
+                        ),
+                      ),
+                    );
                   },
                 ),
-              ),
-            ),
-          ],
+              );
+            }
+            return const SizedBox();
+          },
         ),
-      ),
+        // Danh sách sản phẩm theo danh mục
+        Expanded(
+          child: BlocBuilder<CategoryProductsBloc, CategoryProductsState>(
+            builder: (context, state) {
+              if (state is CategoryProductsLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is CategoryProductsError) {
+                return Center(child: Text('Lỗi: ${state.message}'));
+              }
+              if (state is CategoryProductsLoaded) {
+                if (state.products.isEmpty) {
+                  return const Center(child: Text('Không có sản phẩm nào'));
+                }
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio:
+                        0.65, // Điều chỉnh tỷ lệ để hiển thị đầy đủ
+                  ),
+                  itemCount: state.products.length,
+                  itemBuilder: (context, index) {
+                    return ProductWidget(product: state.products[index]);
+                  },
+                );
+              }
+              return const Center(child: Text('Chọn danh mục để xem sản phẩm'));
+            },
+          ),
+        ),
+      ],
     );
   }
 }

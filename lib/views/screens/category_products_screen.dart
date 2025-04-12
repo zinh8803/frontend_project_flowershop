@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_event.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_state.dart';
+import 'package:frontend_appflowershop/views/widgets/home/product_widget.dart';
 import '../../bloc/category/category_bloc.dart';
 import '../../bloc/category/category_event.dart';
 import '../../bloc/category/category_state.dart';
@@ -23,7 +24,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   @override
   void initState() {
     super.initState();
-    // Lấy danh sách danh mục
     context.read<CategoryBloc>().add(FetchCategoriesEvent());
   }
 
@@ -31,7 +31,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     setState(() {
       _selectedCategory = category;
     });
-    // Lấy danh sách sản phẩm của danh mục được chọn
+
     context
         .read<CategoryProductsBloc>()
         .add(FetchCategoryProductsEvent(category.id));
@@ -57,9 +57,8 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       ),
       body: Row(
         children: [
-          // Danh sách danh mục bên trái
           Container(
-            width: 100, // Chiều rộng cố định cho danh sách danh mục
+            width: 100,
             color: Colors.grey[200],
             child: BlocBuilder<CategoryBloc, CategoryState>(
               builder: (context, state) {
@@ -104,7 +103,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
               },
             ),
           ),
-          // Danh sách sản phẩm bên phải
           Expanded(
             child: BlocBuilder<CategoryProductsBloc, CategoryProductsState>(
               builder: (context, state) {
@@ -128,11 +126,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2, // 2 cột
-                      crossAxisSpacing:
-                          16, // Khoảng cách ngang giữa các sản phẩm
-                      mainAxisSpacing: 16, // Khoảng cách dọc giữa các sản phẩm
-                      childAspectRatio:
-                          0.7, // Tỷ lệ chiều rộng/chiều cao của mỗi sản phẩm
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.7,
                     ),
                     itemCount: state.products.length,
                     itemBuilder: (context, index) {

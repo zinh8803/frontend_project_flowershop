@@ -12,4 +12,10 @@ class CartItem {
   void increaseQuantity() {
     quantity++;
   }
+
+  void decreaseQuantity() {
+    if (quantity > 1) {
+      quantity--;
+    }
+  }
 }

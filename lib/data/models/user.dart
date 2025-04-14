@@ -7,7 +7,7 @@ class UserModel {
   final String? phoneNumber;
   final String? address;
   final bool? isLoggedIn;
-  final bool? lastLoginAt;
+  final String lastLoginAt;
   final String createdAt;
   final String updatedAt;
   final String token;

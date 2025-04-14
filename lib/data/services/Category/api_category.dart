@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:frontend_appflowershop/data/models/category.dart';
 import 'package:frontend_appflowershop/utils/constants.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +27,7 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching categories: $e');
-      rethrow; 
+      rethrow;
     }
   }
 }

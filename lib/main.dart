@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
+import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.dart';
@@ -9,12 +10,15 @@ import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/screens/login_screen.dart';
 import 'bloc/auth/Login/auth_bloc.dart';
+import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
 import 'bloc/category/category_bloc.dart';
 import 'data/services/user/api_service.dart' as userApiService;
 import 'data/services/Category/api_category.dart' as categoryApiService;
 import 'data/services/Product/api_product.dart' as productApiService;
+import 'data/services/Order/api_order.dart' as orderApiService;
 import 'utils/preference_service.dart';
 import 'bloc/product/product_detail/product_detail_bloc.dart';
+import 'package:frontend_appflowershop/views/screens/checkout_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,10 +50,16 @@ class MyApp extends StatelessWidget {
     final userApi = userApiService.ApiService();
     final categoryApi = categoryApiService.ApiService();
     final productApi = productApiService.ApiService_product();
+    final cartService = CartService();
+    final orderService = orderApiService.ApiOrderService();
 
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => userApi),
+        RepositoryProvider(create: (context) => cartService),
+        RepositoryProvider(create: (context) => categoryApi),
+        RepositoryProvider(create: (context) => productApi),
+        RepositoryProvider(create: (context) => orderService),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -78,7 +88,12 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => SearchBloc(productApi),
           ),
-          RepositoryProvider(create: (context) => CartService())
+          BlocProvider(
+            create: (context) => CartBloc(context.read<CartService>()),
+          ),
+          BlocProvider(
+            create: (context) => CheckoutBloc(orderService),
+          ),
         ],
         child: MaterialApp(
           home: FutureBuilder<bool>(

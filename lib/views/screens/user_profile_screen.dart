@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_event.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_state.dart';
-import 'package:frontend_appflowershop/data/models/user.dart';
 import 'package:frontend_appflowershop/views/screens/login_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/user/user_details_screen.dart';
 

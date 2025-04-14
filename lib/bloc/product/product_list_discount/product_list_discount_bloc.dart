@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_event.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_state.dart';
 import 'package:frontend_appflowershop/data/services/Product/api_product.dart';
-import 'package:meta/meta.dart';
 
 class ProductListDiscountBloc
     extends Bloc<ProductListDiscountEvent, ProductListDiscountState> {

@@ -4,9 +4,9 @@ import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
 import 'package:frontend_appflowershop/bloc/cart/cart_event.dart';
 import 'package:frontend_appflowershop/bloc/cart/cart_state.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
-import 'package:frontend_appflowershop/bloc/checkout/checkout_event.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_state.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
+import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_event.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_state.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/checkout/cart_items_widget.dart';
@@ -39,6 +39,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
+    context.read<UserProfileBloc>().add(FetchUserProfileEvent());
   }
 
   @override

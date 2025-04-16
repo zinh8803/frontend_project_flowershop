@@ -45,7 +45,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  // Phần tiêu đề với tên và trạng thái
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
@@ -66,7 +65,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  // Điều hướng đến UserDetailsScreen
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

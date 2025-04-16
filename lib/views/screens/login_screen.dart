@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/auth/Login/auth_bloc.dart';
 import 'package:frontend_appflowershop/bloc/auth/Login/auth_event.dart';
 import 'package:frontend_appflowershop/bloc/auth/Login/auth_state.dart';
+import 'package:frontend_appflowershop/data/models/employee.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/employee_screen.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/login/login_form.dart';
 import 'package:frontend_appflowershop/views/widgets/register/register_link.dart';
@@ -45,10 +47,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       SnackBar(content: Text('Đăng nhập thành công')),
                     );
 
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
+                    // Kiểm tra xem người dùng là nhân viên hay khách hàng
+                    if (state.user is EmployeeModel) {
+                      // Điều hướng đến trang nhân viên
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const EmployeeScreen()),
+                      );
+                    } else {
+                      // Điều hướng đến trang khách hàng
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    }
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.error)),
@@ -102,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .showSnackBar(
                                         const SnackBar(
                                             content:
-                                                Text('nhập đầy đủ thông tin')),
+                                                Text('Nhập đầy đủ thông tin')),
                                       );
                                     }
                                   });

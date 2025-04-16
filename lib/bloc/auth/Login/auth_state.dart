@@ -11,7 +11,7 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
-  final UserModel user;
+  final dynamic user;
 
   AuthSuccess(this.user);
 

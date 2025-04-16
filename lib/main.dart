@@ -6,7 +6,9 @@ import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.da
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
+import 'package:frontend_appflowershop/data/models/employee.dart';
 import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/employee_screen.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/screens/login_screen.dart';
 import 'bloc/auth/Login/auth_bloc.dart';
@@ -18,7 +20,6 @@ import 'data/services/Product/api_product.dart' as productApiService;
 import 'data/services/Order/api_order.dart' as orderApiService;
 import 'utils/preference_service.dart';
 import 'bloc/product/product_detail/product_detail_bloc.dart';
-import 'package:frontend_appflowershop/views/screens/checkout_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,22 +27,22 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  Future<bool> _checkTokenAndUser() async {
+  Future<dynamic> _checkTokenAndUser() async {
     try {
       // Lấy token từ PreferenceService
       final token = await PreferenceService.getToken();
       if (token == null) {
         print('No token found');
-        return false;
+        return null;
       }
 
       final apiService = userApiService.ApiService();
-      await apiService.getUserProfile();
+      final user = await apiService.getUserProfile();
       print('Token is valid, user profile fetched successfully');
-      return true;
+      return user;
     } catch (e) {
       print('Error checking token: $e');
-      return false;
+      return null;
     }
   }
 
@@ -96,7 +97,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          home: FutureBuilder<bool>(
+          home: FutureBuilder<dynamic>(
             future: _checkTokenAndUser(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -104,9 +105,19 @@ class MyApp extends StatelessWidget {
                   body: Center(child: CircularProgressIndicator()),
                 );
               }
-              if (snapshot.hasData && snapshot.data == true) {
-                return const HomeScreen();
+              if (snapshot.hasData && snapshot.data != null) {
+                final user = snapshot.data;
+                print('User type: ${user.runtimeType}');
+                // Kiểm tra xem người dùng là nhân viên hay khách hàng
+                if (user is EmployeeModel) {
+                  print('Navigating to EmployeeScreen');
+                  return const EmployeeScreen();
+                } else {
+                  print('Navigating to HomeScreen');
+                  return const HomeScreen();
+                }
               }
+              print('Navigating to LoginScreen');
               return const LoginScreen();
             },
           ),

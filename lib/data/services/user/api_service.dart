@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:frontend_appflowershop/data/models/employee.dart';
 import 'package:frontend_appflowershop/data/models/user.dart';
 import 'package:frontend_appflowershop/utils/constants.dart';
 import 'package:frontend_appflowershop/utils/preference_service.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  Future<UserModel> login(String email, String password) async {
+  Future<dynamic> login(String email, String password) async {
     final String url = "${Constants.baseUrl}/login";
     final response = await http.post(
       Uri.parse(url),
@@ -15,7 +16,17 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      return UserModel.fromJson(jsonData['data'], jsonData['token']);
+      final data = jsonData['data'];
+      final token = jsonData['token'];
+      if (data['position'] != null) {
+        final employee = EmployeeModel.fromJson(data, token);
+        print('Returning EmployeeModel: $employee');
+        return employee;
+      } else {
+        final user = UserModel.fromJson(data, token);
+        print('Returning UserModel: $user');
+        return user;
+      }
     } else {
       throw Exception('Đăng nhập thất bại: ${response.reasonPhrase}');
     }
@@ -48,7 +59,7 @@ class ApiService {
     }
   }
 
-  Future<UserModel> getUserProfile() async {
+  Future<dynamic> getUserProfile() async {
     try {
       final token = await PreferenceService.getToken();
       if (token == null) {
@@ -68,15 +79,18 @@ class ApiService {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['status'] == 200) {
-          return UserModel.fromJson(jsonResponse['data'], token);
+        final json = jsonDecode(response.body);
+        final data = json['data'];
+
+        if (data['position'] != null) {
+          final employee = EmployeeModel.fromJson(data, token);
+          print('Returning EmployeeModel: $employee');
+          return employee;
         } else {
-          throw Exception('API returned error: ${jsonResponse['message']}');
+          final user = UserModel.fromJson(data, token);
+          print('Returning UserModel: $user');
+          return user;
         }
-      } else {
-        throw Exception(
-            'Failed to load user profile: ${response.statusCode} - ${response.reasonPhrase}');
       }
     } catch (e) {
       print('Error fetching user profile: $e');
@@ -117,4 +131,5 @@ class ApiService {
       rethrow;
     }
   }
+  
 }

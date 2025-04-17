@@ -5,6 +5,7 @@ import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.dart';
+import 'package:frontend_appflowershop/bloc/user/avatar/avatar_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
 import 'package:frontend_appflowershop/data/models/employee.dart';
 import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
@@ -87,6 +88,9 @@ class MyApp extends StatelessWidget {
             create: (context) => UserProfileBloc(userApi, PreferenceService()),
           ),
           BlocProvider(
+            create: (context) => AvatarBloc(userApi),
+          ),
+          BlocProvider(
             create: (context) => SearchBloc(productApi),
           ),
           BlocProvider(
@@ -108,7 +112,6 @@ class MyApp extends StatelessWidget {
               if (snapshot.hasData && snapshot.data != null) {
                 final user = snapshot.data;
                 print('User type: ${user.runtimeType}');
-                // Kiểm tra xem người dùng là nhân viên hay khách hàng
                 if (user is EmployeeModel) {
                   print('Navigating to EmployeeScreen');
                   return const EmployeeScreen();

@@ -4,6 +4,7 @@ import 'package:frontend_appflowershop/data/models/user.dart';
 import 'package:frontend_appflowershop/utils/constants.dart';
 import 'package:frontend_appflowershop/utils/preference_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   Future<dynamic> login(String email, String password) async {
@@ -98,6 +99,76 @@ class ApiService {
     }
   }
 
+  Future<dynamic> updateUserProfile({
+    required String name,
+    required String email,
+    required String address,
+    required String phoneNumber,
+  }) async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response =
+        await http.put(Uri.parse('${Constants.baseUrl}/users/UpdateProfile'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode({
+              'name': name,
+              'email': email,
+              'address': address,
+              'phone_number': phoneNumber,
+            }));
+
+    print('Update user profile response: ${response.body}');
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return UserModel.fromJson(json['data'], token);
+    } else {
+      throw Exception('Failed to update user profile');
+    }
+  }
+
+  Future<String> updateAvatar(String filePath) async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${Constants.baseUrl}/users/update-avatar'),
+    );
+
+    request.headers.addAll({
+      'Authorization': 'Bearer $token',
+    });
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'avatar',
+        filePath,
+        contentType: MediaType('image', 'jpeg'),
+      ),
+    );
+
+    final response = await request.send();
+    final responseBody = await http.Response.fromStream(response);
+
+    print('Update avatar response: ${responseBody.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(responseBody.body);
+      return json['avatar_url'] as String;
+    } else {
+      final json = jsonDecode(responseBody.body);
+      throw Exception(
+          'Failed to update avatar: ${json['message'] ?? responseBody.reasonPhrase}');
+    }
+  }
+
   Future<void> logout() async {
     try {
       final token = await PreferenceService.getToken();
@@ -131,5 +202,4 @@ class ApiService {
       rethrow;
     }
   }
-  
 }

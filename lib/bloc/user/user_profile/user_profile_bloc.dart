@@ -31,5 +31,22 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         emit(UserProfileError(e.toString()));
       }
     });
+
+    on<UpdateUserProfile>((event, emit) async {
+      emit(UserDetailUpdating());
+
+      try {
+        await apiService.updateUserProfile(
+          name: event.name,
+          email: event.email,
+          phoneNumber: event.phoneNumber,
+          address: event.address,
+        );
+        final updateuser = await apiService.getUserProfile();
+        emit(UserProfileLoaded(updateuser));
+      } catch (e) {
+        emit(UserDetailUpdateFailure(e.toString()));
+      }
+    });
   }
 }

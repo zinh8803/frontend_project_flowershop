@@ -174,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        onTap: _onItemTapped, // Xử lý khi bấm vào tab
+        onTap: _onItemTapped,
       ),
     );
   }

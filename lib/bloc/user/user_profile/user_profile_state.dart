@@ -31,3 +31,13 @@ class UserProfileError extends UserProfileState {
 }
 
 class UserProfileLoggedOut extends UserProfileState {}
+
+class UserDetailUpdating extends UserProfileState {}
+
+class UserDetailUpdateSuccess extends UserProfileState {}
+
+class UserDetailUpdateFailure extends UserProfileState {
+  final String error;
+
+  UserDetailUpdateFailure(this.error);
+}

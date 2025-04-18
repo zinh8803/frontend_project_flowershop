@@ -12,7 +12,6 @@ import 'package:frontend_appflowershop/views/widgets/home/productdiscount_list_w
 import '../../bloc/category/category_bloc.dart';
 import '../../bloc/category/category_event.dart';
 import '../../bloc/category/category_state.dart';
-
 import '../widgets/home/header_banner_widget.dart';
 import '../widgets/home/category_list_widget.dart';
 import '../widgets/home/product_list_widget.dart';
@@ -29,6 +28,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  int? _selectedCategoryId;
 
   @override
   void initState() {
@@ -43,12 +43,22 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      if (index != 1) {
+        _selectedCategoryId = null;
+      }
     });
   }
 
   void _onSearch() {
     setState(() {
       _selectedIndex = 2;
+    });
+  }
+
+  void _onCategorySelected(int categoryId) {
+    setState(() {
+      _selectedCategoryId = categoryId;
+      _selectedIndex = 1;
     });
   }
 
@@ -76,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       CategoryListWidget(
                         title: 'Danh sách danh mục sản phẩm',
                         categories: categoryState.categories,
+                        onCategorySelected: _onCategorySelected,
                       ),
                       BlocBuilder<ProductBloc, ProductState>(
                         builder: (context, productState) {
@@ -133,8 +144,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      const CategoryTabScreen(),
-
+      // Tab Category
+      CategoryTabScreen(
+          initialCategoryId: _selectedCategoryId), // Truyền categoryId
       const SearchScreen(),
       const UserProfileScreen(),
     ];
@@ -165,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
         ],

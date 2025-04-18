@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../../data/models/category.dart';
-import '../../screens/category_products_screen.dart';
 
 class CategoryListWidget extends StatelessWidget {
   final String title;
   final List<CategoryModel> categories;
+  final Function(int categoryId)?
+      onCategorySelected; 
 
-  const CategoryListWidget(
-      {super.key, required this.title, required this.categories});
+  const CategoryListWidget({
+    super.key,
+    required this.title,
+    required this.categories,
+    this.onCategorySelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +38,10 @@ class CategoryListWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CategoryProductsScreen(),
-                      ),
-                    );
+                    if (onCategorySelected != null) {
+                      onCategorySelected!(
+                          category.id); 
+                    }
                   },
                   child: Column(
                     children: [

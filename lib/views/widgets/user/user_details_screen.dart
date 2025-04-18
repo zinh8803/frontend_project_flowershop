@@ -210,6 +210,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     controller: emailController,
                     decoration: const InputDecoration(hintText: 'Nhập email'),
                     keyboardType: TextInputType.emailAddress,
+                    readOnly: true,
                   ),
                   const SizedBox(height: 16),
                   const Text(

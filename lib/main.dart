@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_get_user/order_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/sreach_product/sreach_bloc.dart';
@@ -98,6 +100,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => CheckoutBloc(orderService),
+          ),
+          BlocProvider(
+            create: (context) => OrderBloc(orderService),
+          ),
+          BlocProvider(
+            create: (context) => OrderDetailBloc(orderService),
           ),
         ],
         child: MaterialApp(

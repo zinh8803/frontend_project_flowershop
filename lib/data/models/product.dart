@@ -3,6 +3,7 @@ class ProductModel {
   final String name;
   final String description;
   final double price;
+  final int stock;
   final double finalPrice;
   final bool isDiscounted;
   final int categoryId;
@@ -13,6 +14,7 @@ class ProductModel {
     required this.name,
     required this.description,
     required this.price,
+    required this.stock,
     required this.finalPrice,
     required this.isDiscounted,
     required this.categoryId,
@@ -26,6 +28,7 @@ class ProductModel {
       description: json['description'],
       price: double.parse(json['price'].toString()),
       finalPrice: double.parse(json['final_price'].toString()),
+      stock: json['stock'],
       isDiscounted: json['is_discounted'],
       categoryId: json['category_id'],
       imageUrl: json['image_url'],

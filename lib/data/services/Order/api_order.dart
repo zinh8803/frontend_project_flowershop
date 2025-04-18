@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:frontend_appflowershop/data/models/ordergetuser.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend_appflowershop/data/models/cart_item.dart';
 import 'package:frontend_appflowershop/data/models/order.dart';
 import 'package:frontend_appflowershop/utils/constants.dart';
+import 'package:frontend_appflowershop/utils/preference_service.dart';
 
 class ApiOrderService {
   Future<OrderModel> placeOrder({
@@ -17,12 +19,10 @@ class ApiOrderService {
   }) async {
     const url = '${Constants.baseUrl}/Order';
 
-
     final productsList = cartItems
         .asMap()
         .map((index, item) => MapEntry(index, {
-              'product_id':
-                  item.product.id, 
+              'product_id': item.product.id,
               'quantity': item.quantity,
             }))
         .values
@@ -54,6 +54,51 @@ class ApiOrderService {
     } else {
       print('Error response: ${response.body}');
       throw Exception('Failed to place order: ${response.body}');
+    }
+  }
+
+  Future<List<OrdergetuserModel>> getUserOrders() async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found. Please log in again.');
+    }
+
+    final response = await http.get(
+      Uri.parse('${Constants.baseUrl}/Order/User'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List<dynamic> data = json['data'];
+      return data.map((item) => OrdergetuserModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load user orders: ${response.body}');
+    }
+  }
+
+  Future<OrdergetuserModel> getOrderDetail(int orderId) async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found. Please log in again.');
+    }
+
+    final response = await http
+        .get(Uri.parse('${Constants.baseUrl}/Order/detail=$orderId'), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return OrdergetuserModel.fromJson(json['data']);
+    } else {
+      throw Exception('Failed to load order detail: ${response.body}');
     }
   }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_get_user/order_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_event.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_state.dart';
 import 'package:frontend_appflowershop/data/models/user.dart';
+import 'package:frontend_appflowershop/data/services/Order/api_order.dart';
 import 'package:frontend_appflowershop/views/screens/login_screen.dart';
+import 'package:frontend_appflowershop/views/screens/order_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/user/user_details_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -127,6 +130,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ListTile(
                     leading: const Icon(Icons.receipt, color: Colors.red),
                     title: const Text('Đơn hàng của tui'),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                  create: (context) => OrderBloc(
+                                        context.read<ApiOrderService>(),
+                                      ),
+                                  child: const OrderScreen())));
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.location_on, color: Colors.red),
@@ -144,10 +157,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ListTile(
                     leading: const Icon(Icons.card_giftcard, color: Colors.red),
                     title: const Text('Vouchers của tui'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.mood, color: Colors.red),
-                    title: const Text('Niềm vui của tui'),
                   ),
                   const Divider(),
                   ListTile(

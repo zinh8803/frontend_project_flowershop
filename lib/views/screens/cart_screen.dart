@@ -41,7 +41,7 @@ class CartScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        print('Current CartState: $state'); 
+        print('Current CartState: $state');
         if (state is CartInitial) {
           return const Center(child: CircularProgressIndicator());
         }

@@ -46,9 +46,8 @@ class CategoryProductItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hình ảnh sản phẩm
             Expanded(
-              flex: 3, // Chiếm khoảng 60% không gian
+              flex: 3,
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(12)),
@@ -61,7 +60,6 @@ class CategoryProductItem extends StatelessWidget {
                 ),
               ),
             ),
-            // Thông tin sản phẩm
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Column(
@@ -88,7 +86,6 @@ class CategoryProductItem extends StatelessWidget {
                 ],
               ),
             ),
-            // Nút thêm vào giỏ hàng
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(

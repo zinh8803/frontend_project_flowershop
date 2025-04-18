@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend_appflowershop/data/models/user.dart';
 
 abstract class AuthState extends Equatable {
   @override

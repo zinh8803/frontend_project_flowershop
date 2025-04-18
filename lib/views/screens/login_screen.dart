@@ -4,7 +4,11 @@ import 'package:frontend_appflowershop/bloc/auth/Login/auth_bloc.dart';
 import 'package:frontend_appflowershop/bloc/auth/Login/auth_event.dart';
 import 'package:frontend_appflowershop/bloc/auth/Login/auth_state.dart';
 import 'package:frontend_appflowershop/data/models/employee.dart';
-import 'package:frontend_appflowershop/views/screens/Admin/employee_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_flower_service_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_total_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/delivery_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/employee_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/regular_employee_screen.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/login/login_form.dart';
 import 'package:frontend_appflowershop/views/widgets/register/register_link.dart';
@@ -47,14 +51,41 @@ class _LoginScreenState extends State<LoginScreen> {
                       SnackBar(content: Text('Đăng nhập thành công')),
                     );
 
-                    // Kiểm tra xem người dùng là nhân viên hay khách hàng
                     if (state.user is EmployeeModel) {
-                      // Điều hướng đến trang nhân viên
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EmployeeScreen()),
-                      );
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => const EmployeeScreen()),
+                      // );
+
+                      switch (state.user.position.id) {
+                        case 1:
+                          print('Navigating to AdminTotalScreen');
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminTotalScreen()),
+                          );
+                        case 2:
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AdminFlowerServiceScreen()),
+                          );
+                        case 3:
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DeliveryScreen()),
+                          );
+                        default:
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegularEmployeeScreen()),
+                          );
+                      }
                     } else {
                       // Điều hướng đến trang khách hàng
                       Navigator.pushReplacement(

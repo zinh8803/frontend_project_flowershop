@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_get_user/order_event.dart';
 import 'package:frontend_appflowershop/bloc/order/order_get_user/order_state.dart';
-import 'package:frontend_appflowershop/data/models/order.dart';
 import 'package:frontend_appflowershop/data/services/Order/api_order.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {

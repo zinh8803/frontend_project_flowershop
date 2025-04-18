@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_event.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_state.dart';
-import 'package:frontend_appflowershop/data/services/user/api_service.dart';
-import 'package:frontend_appflowershop/utils/constants.dart';
 import 'package:intl/intl.dart';
 
 class OrderDetailScreen extends StatefulWidget {

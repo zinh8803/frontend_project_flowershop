@@ -18,16 +18,17 @@ import 'package:frontend_appflowershop/data/services/Category/api_category.dart'
     as categoryApiService;
 import 'package:frontend_appflowershop/data/services/Order/api_order.dart'
     as orderApiService;
+import 'package:frontend_appflowershop/data/services/Payment/api_payment.dart';
 import 'package:frontend_appflowershop/data/services/Product/api_product.dart'
     as productApiService;
 import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import 'package:frontend_appflowershop/data/services/user/api_service.dart'
     as userApiService;
 import 'package:frontend_appflowershop/utils/preference_service.dart';
-import 'package:frontend_appflowershop/views/screens/admin/admin_flower_service_screen.dart';
-import 'package:frontend_appflowershop/views/screens/admin/admin_total_screen.dart';
-import 'package:frontend_appflowershop/views/screens/admin/delivery_screen.dart';
-import 'package:frontend_appflowershop/views/screens/admin/regular_employee_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_flower_service_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_total_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/delivery_screen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/regular_employee_screen.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/screens/login_screen.dart';
 
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
     final productApi = productApiService.ApiService_product();
     final cartService = CartService();
     final orderService = orderApiService.ApiOrderService();
+    final vnpayService = ApiService_payment();
 
     return MultiRepositoryProvider(
       providers: [
@@ -107,7 +109,7 @@ class MyApp extends StatelessWidget {
             create: (context) => CartBloc(context.read<CartService>()),
           ),
           BlocProvider(
-            create: (context) => CheckoutBloc(orderService),
+            create: (context) => CheckoutBloc(orderService, vnpayService),
           ),
           BlocProvider(
             create: (context) => OrderBloc(orderService),

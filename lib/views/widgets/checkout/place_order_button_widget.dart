@@ -13,6 +13,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
   final TextEditingController addressController;
   final String paymentMethod;
   final List<CartItem> cartItems;
+  final double totalPrice;
 
   const PlaceOrderButtonWidget({
     super.key,
@@ -24,6 +25,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
     required this.addressController,
     required this.paymentMethod,
     required this.cartItems,
+    required this.totalPrice,
   });
 
   @override
@@ -36,18 +38,27 @@ class PlaceOrderButtonWidget extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                context.read<CheckoutBloc>().add(
-                      PlaceOrderEvent(
-                        userId: int.parse(userId),
-                        name: nameController.text,
-                        email: emailController.text,
-                        discount_id: "",
-                        phoneNumber: phoneController.text,
-                        address: addressController.text,
-                        paymentMethod: paymentMethod,
-                        cartItems: cartItems,
-                      ),
-                    );
+                if (paymentMethod == 'cash') {
+                  context.read<CheckoutBloc>().add(
+                        PlaceOrderEvent(
+                          userId: int.parse(userId),
+                          name: nameController.text,
+                          email: emailController.text,
+                          discount_Id: '',
+                          phoneNumber: phoneController.text,
+                          address: addressController.text,
+                          paymentMethod: paymentMethod,
+                          cartItems: cartItems,
+                        ),
+                      );
+                } else if (paymentMethod == 'vnpay') {
+                  context.read<CheckoutBloc>().add(
+                        InitiateVNPayPaymentEvent(
+                          orderId: userId,
+                          amount: totalPrice,
+                        ),
+                      );
+                }
               }
             },
             style: ElevatedButton.styleFrom(

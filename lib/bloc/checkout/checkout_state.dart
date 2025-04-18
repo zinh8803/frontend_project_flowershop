@@ -44,3 +44,30 @@ class CheckoutError extends CheckoutState {
   @override
   List<Object?> get props => [message];
 }
+
+class CheckoutPaymentUrlLoaded extends CheckoutState {
+  final String paymentUrl;
+
+  CheckoutPaymentUrlLoaded(this.paymentUrl);
+
+  @override
+  List<Object?> get props => [paymentUrl];
+}
+
+class CheckoutPaymentSuccess extends CheckoutState {
+  final Map<String, dynamic> paymentData;
+
+  CheckoutPaymentSuccess(this.paymentData);
+
+  @override
+  List<Object?> get props => [paymentData];
+}
+
+class CheckoutPaymentFailed extends CheckoutState {
+  final String message;
+
+  CheckoutPaymentFailed(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

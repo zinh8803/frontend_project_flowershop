@@ -7,7 +7,6 @@ import 'package:frontend_appflowershop/data/models/employee.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_flower_service_screen.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_total_screen.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/delivery_screen.dart';
-import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/employee_screen.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/regular_employee_screen.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/login/login_form.dart';

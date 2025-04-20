@@ -9,7 +9,7 @@ class ApiService_product {
       final response = await http.get(
         Uri.parse('${Constants.baseUrl}/products/search?query=$query'),
       );
-
+      
       print('Searching products with query: $query');
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');

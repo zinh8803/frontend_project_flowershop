@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_event.dart';
 import 'package:frontend_appflowershop/data/models/cart_item.dart';
+import 'dart:math';
 
 class PlaceOrderButtonWidget extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -52,9 +53,15 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                         ),
                       );
                 } else if (paymentMethod == 'vnpay') {
+                  int generateRandom6DigitNumber() {
+                    final random = Random();
+                    return 100000 + random.nextInt(900000);
+                  }
+
+                  int randomOrderId = generateRandom6DigitNumber();
                   context.read<CheckoutBloc>().add(
                         InitiateVNPayPaymentEvent(
-                          orderId: userId,
+                          orderId: randomOrderId.toString(),
                           amount: totalPrice,
                         ),
                       );

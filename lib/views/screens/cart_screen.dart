@@ -108,6 +108,12 @@ class CartScreen extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                        if (cartItem.size != null)
+                                          Text(
+                                              'Kích thước: ${cartItem.size!.name}'),
+                                        if (cartItem.colors.isNotEmpty)
+                                          Text(
+                                              'Màu sắc: ${cartItem.colors.map((c) => c.name).join(', ')}'),
                                       ],
                                     ),
                                   ),
@@ -116,8 +122,13 @@ class CartScreen extends StatelessWidget {
                                       IconButton(
                                         onPressed: () {
                                           context.read<CartBloc>().add(
-                                              DecreaseQuantityEvent(
-                                                  cartItem.product.id));
+                                                DecreaseQuantityEvent(
+                                                  productId:
+                                                      cartItem.product.id,
+                                                  size: cartItem.size,
+                                                  colors: cartItem.colors,
+                                                ),
+                                              );
                                         },
                                         icon: const Icon(
                                             Icons.remove_circle_outline,
@@ -130,8 +141,13 @@ class CartScreen extends StatelessWidget {
                                       IconButton(
                                         onPressed: () {
                                           context.read<CartBloc>().add(
-                                              IncreaseQuantityEvent(
-                                                  cartItem.product.id));
+                                                IncreaseQuantityEvent(
+                                                  productId:
+                                                      cartItem.product.id,
+                                                  size: cartItem.size,
+                                                  colors: cartItem.colors,
+                                                ),
+                                              );
                                         },
                                         icon: const Icon(
                                             Icons.add_circle_outline,
@@ -144,8 +160,13 @@ class CartScreen extends StatelessWidget {
                                                   context);
                                           if (shouldDelete == true) {
                                             context.read<CartBloc>().add(
-                                                RemoveFromCartEvent(
-                                                    cartItem.product.id));
+                                                  RemoveFromCartEvent(
+                                                    productId:
+                                                        cartItem.product.id,
+                                                    size: cartItem.size,
+                                                    colors: cartItem.colors,
+                                                  ),
+                                                );
                                           }
                                         },
                                         icon: const Icon(Icons.delete_outline,

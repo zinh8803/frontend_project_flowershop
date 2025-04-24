@@ -4,6 +4,8 @@ import 'package:frontend_appflowershop/bloc/product/product_detail/product_detai
 import 'package:frontend_appflowershop/bloc/product/product_detail/product_detail_event.dart';
 import 'package:frontend_appflowershop/bloc/product/product_detail/product_detail_state.dart';
 import 'package:frontend_appflowershop/data/models/product.dart';
+import 'package:frontend_appflowershop/data/models/size.dart';
+import 'package:frontend_appflowershop/data/models/color.dart';
 import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -16,6 +18,24 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  final List<SizeModel> _sizes = [
+    SizeModel(id: 1, name: 'Bó nhỏ', priceModifier: -10),
+    SizeModel(id: 2, name: 'Bó lớn', priceModifier: 10),
+  ];
+
+  final List<ColorModel> _colors = [
+    ColorModel(id: 1, name: 'Xanh'),
+    ColorModel(id: 2, name: 'Đỏ'),
+    ColorModel(id: 3, name: 'Cam'),
+    ColorModel(id: 4, name: 'Trắng'),
+  ];
+
+  SizeModel? _selectedSize;
+  List<ColorModel> _selectedColors = [];
+  double _currentPrice = 0;
+  bool _canAddToCart =
+      false; 
+
   @override
   void initState() {
     super.initState();
@@ -24,15 +44,57 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         .add(FetchProductDetailEvent(widget.productId));
   }
 
-  void _addToCart(BuildContext context, ProductModel product) {
+  void _updatePrice(ProductModel product) {
+    _currentPrice = product.price;
+    if (_selectedSize != null) {
+      _currentPrice += (_currentPrice * _selectedSize!.priceModifier / 100);
+    }
+    for (var color in _selectedColors) {
+      _currentPrice += (_currentPrice * 0.05);
+    }
+    _updateAddToCartState(); 
+  }
+
+  void _updateAddToCartState() {
+    bool sizeSelected = _sizes.isEmpty || _selectedSize != null;
+    bool colorsSelected = _colors.isEmpty || _selectedColors.isNotEmpty;
+    setState(() {
+      _canAddToCart = sizeSelected && colorsSelected;
+    });
+  }
+
+  void _addToCart(BuildContext context, ProductModel? product) {
+    if (product == null || !_canAddToCart) return;
     final cartService = context.read<CartService>();
-    cartService.addToCart(product);
+    cartService.addToCart(product.copyWith(finalPrice: _currentPrice),
+        size: _selectedSize, colors: _selectedColors);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${product.name} đã được thêm vào giỏ hàng'),
+        content: Text(
+            '${product.name} (Size: ${_selectedSize?.name ?? 'Mặc định'}, Màu: ${_selectedColors.map((c) => c.name).join(', ')}) đã được thêm vào giỏ hàng với giá ${_currentPrice.toStringAsFixed(0)}đ'),
         duration: const Duration(seconds: 2),
       ),
     );
+  }
+
+  void _selectSize(SizeModel? size, ProductModel? product) {
+    if (product == null) return;
+    setState(() {
+      _selectedSize = size;
+      _updatePrice(product);
+    });
+  }
+
+  void _toggleColor(ColorModel color, ProductModel? product) {
+    if (product == null) return;
+    setState(() {
+      if (_selectedColors.contains(color)) {
+        _selectedColors.remove(color);
+      } else {
+        _selectedColors.add(color);
+      }
+      _updatePrice(product);
+    });
   }
 
   @override
@@ -63,6 +125,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           }
           if (state is ProductDetailLoaded) {
             final product = state.product;
+            if (_currentPrice == 0) {
+              _currentPrice = product.price;
+              _updateAddToCartState(); // Khởi tạo trạng thái nút khi sản phẩm được tải
+            }
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +161,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '${product.finalPrice}đ',
+                          '${_currentPrice.toStringAsFixed(0)}đ',
                           style: const TextStyle(
                             fontSize: 20,
                             color: Colors.red,
@@ -105,25 +171,49 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         const SizedBox(height: 16),
                         const Divider(),
                         const SizedBox(height: 16),
-                        const Text(
-                          'Phiên bản',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.red),
-                            borderRadius: BorderRadius.circular(8),
+                        if (_sizes.isNotEmpty) ...[
+                          const Text(
+                            'Kích thước',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          child: Text(
-                            product.name,
-                            style: const TextStyle(color: Colors.red),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8.0,
+                            children: _sizes
+                                .map((size) => ChoiceChip(
+                                      label: Text(size.name),
+                                      selected: _selectedSize == size,
+                                      onSelected: (selected) {
+                                        _selectSize(
+                                            selected ? size : null, product);
+                                      },
+                                    ))
+                                .toList(),
                           ),
-                        ),
-                        const SizedBox(height: 16),
+                          const SizedBox(height: 16),
+                        ],
+                        if (_colors.isNotEmpty) ...[
+                          const Text(
+                            'Màu sắc',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8.0,
+                            children: _colors
+                                .map((color) => FilterChip(
+                                      label: Text(color.name),
+                                      selected: _selectedColors.contains(color),
+                                      onSelected: (selected) {
+                                        _toggleColor(color, product);
+                                      },
+                                    ))
+                                .toList(),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                         const Text(
                           'Mô tả sản phẩm',
                           style: TextStyle(
@@ -133,22 +223,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         Text(
                           product.description,
                           style: const TextStyle(fontSize: 14),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Khách hàng nhận xét',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Chưa có nhận xét nào.',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Viết nhận xét',
-                          style: TextStyle(fontSize: 14, color: Colors.blue),
                         ),
                       ],
                     ),
@@ -163,7 +237,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       bottomNavigationBar: BlocBuilder<ProductDetailBloc, ProductDetailState>(
         builder: (context, state) {
           if (state is ProductDetailLoaded) {
-            final product = state.product;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -171,26 +244,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        _addToCart(context, product);
+                        Navigator.pop(context);
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.grey),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text('Thêm vào giỏ'),
+                      child: const Text('Quay lại'),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: _canAddToCart
+                          ? () {
+                              _addToCart(context, state.product);
+                            }
+                          : null, // Vô hiệu hóa nếu _canAddToCart là false
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text('Quay lại'),
+                      child: const Text('Thêm vào giỏ'),
                     ),
                   ),
                 ],

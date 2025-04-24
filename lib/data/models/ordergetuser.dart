@@ -110,6 +110,8 @@ class OrderItemModel {
   final int productId;
   final int quantity;
   final double price;
+  final int? sizeId;
+  final List<dynamic>? colors;
   final ProductModel? product;
 
   OrderItemModel({
@@ -118,6 +120,8 @@ class OrderItemModel {
     required this.productId,
     required this.quantity,
     required this.price,
+    this.sizeId,
+    this.colors,
     this.product,
   });
 
@@ -128,6 +132,10 @@ class OrderItemModel {
       productId: json['product_id'],
       quantity: json['quantity'],
       price: double.parse(json['price']),
+      sizeId: json['size_id'],
+      colors: (json['colors'] as List?)
+          ?.map((colorMap) => colorMap['color_id'] as int?)
+          .toList(),
       product: json['product'] != null
           ? ProductModel.fromJson(json['product'])
           : null,

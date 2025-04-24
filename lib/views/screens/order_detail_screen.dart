@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_event.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_state.dart';
+import 'package:frontend_appflowershop/data/models/ordergetuser.dart';
 import 'package:intl/intl.dart';
 
 class OrderDetailScreen extends StatefulWidget {
@@ -15,10 +16,36 @@ class OrderDetailScreen extends StatefulWidget {
 }
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
+  final Map<int?, String> _sizeNameMap = {
+    1: 'Bó nhỏ',
+    2: 'Bó lớn',
+  };
+  final Map<int?, String> _colorNameMap = {
+    1: 'Đỏ',
+    2: 'Xanh',
+    3: 'Vàng',
+    4: 'Trắng',
+  };
+
   @override
   void initState() {
     super.initState();
     context.read<OrderDetailBloc>().add(FetchOrderDetail(widget.orderId));
+  }
+
+  String _getSizeName(OrderItemModel item) {
+    return _sizeNameMap[item.sizeId] ?? 'Không xác định';
+  }
+
+  String _getColorName(OrderItemModel item) {
+    if (item.colors != null && item.colors!.isNotEmpty) {
+      return item.colors!
+          .whereType<int>() 
+          .map((colorId) => _colorNameMap[colorId] ?? 'Không xác định')
+          .join(', ');
+    }
+    print('Item colors: ${item.colors}');
+    return 'Không có màu';
   }
 
   @override
@@ -87,9 +114,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Số lượng: ${item.quantity}'),
-                              Text('Giá: ${item.price.toStringAsFixed(0)}đ'),
-                              if (item.product?.description != null)
-                                Text('Mô tả: ${item.product!.description}'),
+                              Text('Kích thước: ${_getSizeName(item)}'),
+                              Text('Màu sắc: ${_getColorName(item)}'),
+                              //Text('Giá: ${item.price.toStringAsFixed(0)}đ'),
+                              // if (item.product?.description != null)
+                              //   Text('Mô tả: ${item.product!.description}'),
                             ],
                           ),
                         ),

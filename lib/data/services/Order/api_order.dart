@@ -24,10 +24,13 @@ class ApiOrderService {
         .map((index, item) => MapEntry(index, {
               'product_id': item.product.id,
               'quantity': item.quantity,
+              "size_id": item.size?.id ?? 1,
+              "color_ids": item.colors.isNotEmpty
+                  ? [item.colors[0].id]
+                  : [1],
             }))
         .values
         .toList();
-
     final body = jsonEncode({
       'user_id': userId,
       'discount_id': "",

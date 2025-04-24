@@ -9,7 +9,7 @@ class ApiService_product {
       final response = await http.get(
         Uri.parse('${Constants.baseUrl}/products/search?query=$query'),
       );
-      
+
       print('Searching products with query: $query');
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -135,6 +135,26 @@ class ApiService_product {
     } catch (e) {
       print('Error fetching products by category: $e');
       rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getProductOptions(int productId) async {
+    print(
+        'Fetching product options from: ${Constants.baseUrl}/products/$productId/options');
+    print('Product ID: $productId');
+    final response = await http.get(
+      Uri.parse('${Constants.baseUrl}/products/$productId/options'),
+      headers: {'Accept': 'application/json'},
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      return data['data']; // Trả về { "sizes": [], "colors": [] }
+    } else {
+      throw Exception(
+          'Không thể lấy danh sách tùy chọn: ${response.statusCode}');
     }
   }
 }

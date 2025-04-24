@@ -24,7 +24,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     });
 
     on<AddToCartEvent>((event, emit) {
-      cartService.addToCart(event.product);
+      cartService.addToCart(
+        event.product,
+        size: event.size,
+        colors: event.colors,
+        quantity: event.quantity,
+      );
       emit(CartLoaded(
         cartItems: cartService.cartItems,
         totalItems: cartService.totalItems,
@@ -33,7 +38,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     });
 
     on<RemoveFromCartEvent>((event, emit) {
-      cartService.removeFromCart(event.productId);
+      cartService.removeFromCart(
+        event.productId,
+        size: event.size,
+        colors: event.colors,
+      );
       emit(CartLoaded(
         cartItems: cartService.cartItems,
         totalItems: cartService.totalItems,
@@ -42,7 +51,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     });
 
     on<IncreaseQuantityEvent>((event, emit) {
-      cartService.increaseQuantity(event.productId);
+      cartService.increaseQuantity(
+        event.productId,
+        size: event.size,
+        colors: event.colors,
+      );
       emit(CartLoaded(
         cartItems: cartService.cartItems,
         totalItems: cartService.totalItems,
@@ -51,7 +64,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     });
 
     on<DecreaseQuantityEvent>((event, emit) {
-      cartService.decreaseQuantity(event.productId);
+      cartService.decreaseQuantity(
+        event.productId,
+        size: event.size,
+        colors: event.colors,
+      );
       emit(CartLoaded(
         cartItems: cartService.cartItems,
         totalItems: cartService.totalItems,
@@ -68,7 +85,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       ));
     });
     on<ClearCartEventall>((event, emit) {
-      print('ClearCartEvent received'); 
+      print('ClearCartEvent received');
       try {
         cartService.clearCart();
         emit(CartLoaded(

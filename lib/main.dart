@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/bloc/ProductOptionsBloc/product_options_bloc_bloc.dart';
 import 'package:frontend_appflowershop/bloc/auth/Login/auth_bloc.dart';
 import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_bloc.dart';
@@ -119,6 +120,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => OrderDetailBloc(orderService),
+          ),
+          BlocProvider(
+            create: (context) => ProductOptionsBloc(),
           ),
         ],
         child: MaterialApp(

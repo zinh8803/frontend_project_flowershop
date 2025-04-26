@@ -25,12 +25,13 @@ class ApiOrderService {
               'product_id': item.product.id,
               'quantity': item.quantity,
               "size_id": item.size?.id ?? 1,
-              "color_ids": item.colors.isNotEmpty
-                  ? [item.colors[0].id]
-                  : [1],
+              "color_ids": item.colors.map((color) => color.id).toList(),
             }))
         .values
         .toList();
+
+    print('Products List Input: $productsList'); // In ra productsList
+
     final body = jsonEncode({
       'user_id': userId,
       'discount_id': "",

@@ -10,7 +10,7 @@ class LoginButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: onPressed, // ElevatedButton chấp nhận null cho onPressed
+        onPressed: onPressed, 
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.deepPurple,
           padding: const EdgeInsets.symmetric(vertical: 16),

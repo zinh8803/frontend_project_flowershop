@@ -125,7 +125,7 @@ class _CategoryTabScreenState extends State<CategoryTabScreen> {
               }
               if (state is CategoryProductsError) {
                 print('CategoryProductsBloc Error: ${state.message}');
-                return Center(child: Text('Lỗi: ${state.message}'));
+                return Center(child: Text('Không có sản phẩm'));
               }
               if (state is CategoryProductsLoaded) {
                 if (state.products.isEmpty) {

@@ -19,8 +19,8 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final List<SizeModel> _sizes = [
-    SizeModel(id: 1, name: 'Bó nhỏ', priceModifier: -10),
-    SizeModel(id: 2, name: 'Bó lớn', priceModifier: 10),
+    SizeModel(id: 1, name: 'Bó nhỏ', priceModifier: 0),
+    SizeModel(id: 2, name: 'Bó lớn', priceModifier: 50000),
   ];
 
   final List<ColorModel> _colors = [
@@ -33,8 +33,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   SizeModel? _selectedSize;
   List<ColorModel> _selectedColors = [];
   double _currentPrice = 0;
-  bool _canAddToCart =
-      false; 
+  bool _canAddToCart = false;
+  ProductModel? _product; // Lưu trữ thông tin sản phẩm đã tải
 
   @override
   void initState() {
@@ -44,15 +44,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         .add(FetchProductDetailEvent(widget.productId));
   }
 
-  void _updatePrice(ProductModel product) {
-    _currentPrice = product.price;
+  void _updatePrice() {
+    if (_product == null) return;
+    _currentPrice = _product!.price;
     if (_selectedSize != null) {
-      _currentPrice += (_currentPrice * _selectedSize!.priceModifier / 100);
+      if (_selectedSize!.id == 2) {
+        // Bó lớn
+        _currentPrice += _selectedSize!.priceModifier;
+      }
     }
-    for (var color in _selectedColors) {
-      _currentPrice += (_currentPrice * 0.05);
+    if (_selectedColors.length > 1) {
+      _currentPrice += (_selectedColors.length - 1) * 10000;
     }
-    _updateAddToCartState(); 
+    _updateAddToCartState();
+    print('Current Price: $_currentPrice');
   }
 
   void _updateAddToCartState() {
@@ -63,38 +68,36 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     });
   }
 
-  void _addToCart(BuildContext context, ProductModel? product) {
-    if (product == null || !_canAddToCart) return;
+  void _addToCart(BuildContext context) {
+    if (_product == null || !_canAddToCart) return;
     final cartService = context.read<CartService>();
-    cartService.addToCart(product.copyWith(finalPrice: _currentPrice),
+    cartService.addToCart(_product!.copyWith(finalPrice: _currentPrice),
         size: _selectedSize, colors: _selectedColors);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-            '${product.name} (Size: ${_selectedSize?.name ?? 'Mặc định'}, Màu: ${_selectedColors.map((c) => c.name).join(', ')}) đã được thêm vào giỏ hàng với giá ${_currentPrice.toStringAsFixed(0)}đ'),
+            '${_product!.name} (Size: ${_selectedSize?.name ?? 'Mặc định'}, Màu: ${_selectedColors.map((c) => c.name).join(', ')}) đã được thêm vào giỏ hàng với giá ${_currentPrice.toStringAsFixed(0)}đ'),
         duration: const Duration(seconds: 2),
       ),
     );
   }
 
-  void _selectSize(SizeModel? size, ProductModel? product) {
-    if (product == null) return;
+  void _selectSize(SizeModel? size) {
     setState(() {
       _selectedSize = size;
-      _updatePrice(product);
     });
+    _updatePrice();
   }
 
-  void _toggleColor(ColorModel color, ProductModel? product) {
-    if (product == null) return;
+  void _toggleColor(ColorModel color) {
     setState(() {
       if (_selectedColors.contains(color)) {
         _selectedColors.remove(color);
       } else {
         _selectedColors.add(color);
       }
-      _updatePrice(product);
     });
+    _updatePrice();
   }
 
   @override
@@ -124,17 +127,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             return Center(child: Text('Lỗi: ${state.message}'));
           }
           if (state is ProductDetailLoaded) {
-            final product = state.product;
+            _product = state.product;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _updatePrice();
+              _updateAddToCartState();
+            });
             if (_currentPrice == 0) {
-              _currentPrice = product.price;
-              _updateAddToCartState(); // Khởi tạo trạng thái nút khi sản phẩm được tải
+              _currentPrice = _product!.price;
             }
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(
-                    product.imageUrl,
+                    _product!.imageUrl,
                     height: 300,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -147,7 +153,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.name,
+                          _product!.name,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -155,7 +161,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'SP0${product.id}',
+                          'SP0${_product!.id}',
                           style:
                               const TextStyle(fontSize: 16, color: Colors.grey),
                         ),
@@ -185,8 +191,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       label: Text(size.name),
                                       selected: _selectedSize == size,
                                       onSelected: (selected) {
-                                        _selectSize(
-                                            selected ? size : null, product);
+                                        _selectSize(selected ? size : null);
                                       },
                                     ))
                                 .toList(),
@@ -207,7 +212,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       label: Text(color.name),
                                       selected: _selectedColors.contains(color),
                                       onSelected: (selected) {
-                                        _toggleColor(color, product);
+                                        _toggleColor(color);
                                       },
                                     ))
                                 .toList(),
@@ -221,7 +226,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          product.description,
+                          _product!.description,
                           style: const TextStyle(fontSize: 14),
                         ),
                       ],
@@ -256,11 +261,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _canAddToCart
-                          ? () {
-                              _addToCart(context, state.product);
-                            }
-                          : null, // Vô hiệu hóa nếu _canAddToCart là false
+                      onPressed:
+                          _canAddToCart ? () => _addToCart(context) : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(vertical: 16),

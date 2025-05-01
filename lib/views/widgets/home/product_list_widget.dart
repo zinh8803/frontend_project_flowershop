@@ -27,10 +27,10 @@ class ProductListWidget extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const Text(
-                "Xem tất cả >",
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
+              // const Text(
+              //   "Xem tất cả >",
+              //   style: TextStyle(fontSize: 14, color: Colors.grey),
+              // ),
             ],
           ),
         ),

@@ -76,14 +76,14 @@ class ProductWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.add_circle_outline,
-                  color: Colors.red,
-                  size: 24,
-                ),
-                onPressed: () => _addToCart(context),
-              ),
+              // IconButton(
+              //   icon: const Icon(
+              //     Icons.add_circle_outline,
+              //     color: Colors.red,
+              //     size: 24,
+              //   ),
+              //   onPressed: () => _addToCart(context),
+              // ),
             ],
           ),
         ),

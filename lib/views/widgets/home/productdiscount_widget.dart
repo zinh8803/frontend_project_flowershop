@@ -76,15 +76,15 @@ class ProductdiscountWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.add_circle_outline,
-                  color: Colors.red,
-                ),
-                onPressed: () {
-                  _addToCart(context);
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(
+              //     Icons.add_circle_outline,
+              //     color: Colors.red,
+              //   ),
+              //   onPressed: () {
+              //     _addToCart(context);
+              //   },
+              // ),
             ],
           ),
         ),

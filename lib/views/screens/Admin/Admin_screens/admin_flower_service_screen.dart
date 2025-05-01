@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_appflowershop/utils/preference_service.dart';
 
 class AdminFlowerServiceScreen extends StatelessWidget {
   const AdminFlowerServiceScreen({super.key});
@@ -12,6 +13,11 @@ class AdminFlowerServiceScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
+              PreferenceService.clearToken().then((_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Đăng xuất thành công')),
+                );
+              });
               Navigator.pushReplacementNamed(context, '/login');
             },
           ),

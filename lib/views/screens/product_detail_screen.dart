@@ -34,7 +34,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   List<ColorModel> _selectedColors = [];
   double _currentPrice = 0;
   bool _canAddToCart = false;
-  ProductModel? _product; // Lưu trữ thông tin sản phẩm đã tải
+  ProductModel? _product;
 
   @override
   void initState() {
@@ -46,10 +46,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   void _updatePrice() {
     if (_product == null) return;
-    _currentPrice = _product!.price;
+    _currentPrice = _product!.finalPrice;
     if (_selectedSize != null) {
       if (_selectedSize!.id == 2) {
-        // Bó lớn
         _currentPrice += _selectedSize!.priceModifier;
       }
     }

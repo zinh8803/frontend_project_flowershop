@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_appflowershop/utils/preference_service.dart';
 
 class RegularEmployeeScreen extends StatelessWidget {
   const RegularEmployeeScreen({super.key});
@@ -12,7 +13,11 @@ class RegularEmployeeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              // TODO: Thêm logic đăng xuất
+               PreferenceService.clearToken().then((_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Đăng xuất thành công')),
+                );
+              });
               Navigator.pushReplacementNamed(context, '/login');
             },
           ),

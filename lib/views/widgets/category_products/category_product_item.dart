@@ -90,14 +90,14 @@ class CategoryProductItem extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.only(right: 8, bottom: 4),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.add_circle_outline,
-                    color: Colors.red,
-                    size: 20,
-                  ),
-                  onPressed: () => _addToCart(context),
-                ),
+                // child: IconButton(
+                //   icon: const Icon(
+                //     Icons.add_circle_outline,
+                //     color: Colors.red,
+                //     size: 20,
+                //   ),
+                //   onPressed: () => _addToCart(context),
+                // ),
               ),
             ),
           ],

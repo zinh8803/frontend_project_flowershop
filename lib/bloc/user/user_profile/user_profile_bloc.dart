@@ -1,4 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
+import 'package:frontend_appflowershop/bloc/cart/cart_event.dart';
+import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import 'package:frontend_appflowershop/data/services/user/api_service.dart';
 import 'package:frontend_appflowershop/utils/preference_service.dart';
 
@@ -26,6 +29,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       try {
         await apiService.logout();
         await PreferenceService.clearToken();
+        print('User logged out cleared');
         emit(UserProfileLoggedOut());
       } catch (e) {
         emit(UserProfileError(e.toString()));

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:frontend_appflowershop/data/models/employee.dart';
 import 'package:frontend_appflowershop/data/models/ordergetuser.dart';
+import 'package:frontend_appflowershop/data/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend_appflowershop/data/models/cart_item.dart';
 import 'package:frontend_appflowershop/data/models/order.dart';
@@ -58,6 +60,172 @@ class ApiOrderService {
     } else {
       print('Error response: ${response.body}');
       throw Exception('Failed to place order: ${response.body}');
+    }
+  }
+
+  Future<List<OrdergetuserModel>> getOrdersPending() async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found. Please log in again.');
+    }
+
+    final response = await http.get(
+      Uri.parse('${Constants.baseUrl}/Order-pending'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List<dynamic> data = json['data'];
+      return data.map((item) => OrdergetuserModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load orders: ${response.body}');
+    }
+  }
+
+  Future<List<OrdergetuserModel>> getOrdersProcessing() async {
+    final token = await PreferenceService.getToken();
+    final employeeId = await getEmployeeId();
+    if (token == null) {
+      throw Exception('Token not found. Please log in again.');
+    }
+
+    final response = await http.get(
+      Uri.parse(
+          '${Constants.baseUrl}/Order-processing?employee_id=$employeeId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List<dynamic> data = json['data'];
+      return data.map((item) => OrdergetuserModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load orders: ${response.body}');
+    }
+  }
+
+  Future<List<OrdergetuserModel>> getOrdersCompleted() async {
+    final token = await PreferenceService.getToken();
+    final employeeId = await getEmployeeId();
+    if (token == null) {
+      throw Exception('Token not found. Please log in again.');
+    }
+
+    final response = await http.get(
+      Uri.parse('${Constants.baseUrl}/Order-completed?employee_id=$employeeId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List<dynamic> data = json['data'];
+      return data.map((item) => OrdergetuserModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load orders: ${response.body}');
+    }
+  }
+
+  Future<dynamic> getEmployeeId() async {
+    try {
+      final token = await PreferenceService.getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+
+      final response = await http.get(
+        Uri.parse('${Constants.baseUrl}/user/profile'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('Fetching user profile from: ${Constants.baseUrl}/user/profile');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        final data = json['data'];
+
+        if (data['position'] != null) {
+          final employeeId = data['id'] as int;
+          return employeeId;
+        } else {
+          final user = UserModel.fromJson(data, token);
+          print('Returning UserModel: $user');
+          return user;
+        }
+      }
+    } catch (e) {
+      print('Error fetching user profile: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updateOrderStatusPending(int orderId) async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found. Please log in again.');
+    }
+    final employeeId = await getEmployeeId();
+    final response = await http.put(
+      Uri.parse('${Constants.baseUrl}/Order/$orderId/status'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'status': 'processing',
+        'employee_id': employeeId,
+      }),
+    );
+
+    print('Response body: ${response.body}');
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update order status: ${response.body}');
+    }
+  }
+
+  Future<void> updateOrderStatusCompleted(int orderId) async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found. Please log in again.');
+    }
+    final employeeId = await getEmployeeId();
+    final response = await http.put(
+      Uri.parse('${Constants.baseUrl}/Order/$orderId/status'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'status': 'completed',
+        'employee_id': employeeId,
+      }),
+    );
+
+    print('Response body: ${response.body}');
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update order status: ${response.body}');
     }
   }
 

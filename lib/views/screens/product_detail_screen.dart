@@ -56,7 +56,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       _currentPrice += (_selectedColors.length - 1) * 10000;
     }
     _updateAddToCartState();
-    print('Current Price: $_currentPrice');
+    // print('Current Price: $_currentPrice');
   }
 
   void _updateAddToCartState() {

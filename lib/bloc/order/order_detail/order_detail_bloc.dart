@@ -16,5 +16,25 @@ class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
         emit(OrderDetailError(e.toString()));
       }
     });
+    on<UpdateOrderStatusToProcessing>((event, emit) async {
+      emit(OrderDetailUpdating());
+      try {
+        await apiService.updateOrderStatusPending(event.orderId);
+        final order = await apiService.getOrderDetail(event.orderId);
+        emit(OrderDetailLoaded(order));
+      } catch (e) {
+        emit(OrderDetailError(e.toString()));
+      }
+    });
+    on<UpdateOrderStatusToCompleted>((event, emit) async {
+      emit(OrderDetailUpdating());
+      try {
+        await apiService.updateOrderStatusCompleted(event.orderId);
+        final order = await apiService.getOrderDetail(event.orderId);
+        emit(OrderDetailLoaded(order));
+      } catch (e) {
+        emit(OrderDetailError(e.toString()));
+      }
+    });
   }
 }

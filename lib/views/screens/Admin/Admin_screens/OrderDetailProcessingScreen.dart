@@ -3,19 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_event.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_state.dart';
+import 'package:frontend_appflowershop/bloc/order/order_processing/order_processing_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_processing/order_processing_event.dart';
 import 'package:frontend_appflowershop/data/models/ordergetuser.dart';
 import 'package:intl/intl.dart';
 
-class OrderDetailScreen extends StatefulWidget {
+class OrderDetailProcessingScreen extends StatefulWidget {
   final int orderId;
 
-  const OrderDetailScreen({super.key, required this.orderId});
+  const OrderDetailProcessingScreen({super.key, required this.orderId});
 
   @override
-  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+  State<OrderDetailProcessingScreen> createState() => _OrderDetailScreenState();
 }
 
-class _OrderDetailScreenState extends State<OrderDetailScreen> {
+class _OrderDetailScreenState extends State<OrderDetailProcessingScreen> {
   final Map<int?, String> _sizeNameMap = {
     1: 'Bó nhỏ',
     2: 'Bó lớn',
@@ -58,7 +60,21 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: BlocBuilder<OrderDetailBloc, OrderDetailState>(
+      body: BlocConsumer<OrderDetailBloc, OrderDetailState>(
+        listener: (context, state) {
+          if (state is OrderDetailError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Lỗi: ${state.message}')),
+            );
+          } else if (state is OrderDetailLoaded &&
+              state.orders.status == 'completed') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Đơn hàng đã được giao thành công')),
+            );
+            context.read<OrderProcessingBloc>().add(FetchProcessingOrders());
+            Navigator.pop(context);
+          }
+        },
         builder: (context, state) {
           if (state is OrderDetailLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -71,12 +87,27 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Đơn hàng #${order.id}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Đơn hàng #${order.id}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (order.status == 'processing')
+                        state is OrderDetailUpdating
+                            ? const CircularProgressIndicator()
+                            : ElevatedButton(
+                                onPressed: () {
+                                  context.read<OrderDetailBloc>().add(
+                                      UpdateOrderStatusToCompleted(order.id));
+                                },
+                                child: const Text('Hoàn thành'),
+                              ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   _buildInfoRow(
@@ -116,9 +147,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               Text('Số lượng: ${item.quantity}'),
                               Text('Kích thước: ${_getSizeName(item)}'),
                               Text('Màu sắc: ${_getColorName(item)}'),
-                              //Text('Giá: ${item.price.toStringAsFixed(0)}đ'),
-                              // if (item.product?.description != null)
-                              //   Text('Mô tả: ${item.product!.description}'),
                             ],
                           ),
                         ),

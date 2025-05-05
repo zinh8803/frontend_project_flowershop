@@ -18,7 +18,6 @@ import 'package:frontend_appflowershop/views/widgets/checkout/place_order_button
 import 'package:frontend_appflowershop/views/widgets/checkout/promotion_widget.dart';
 import 'package:frontend_appflowershop/views/widgets/checkout/summary_widget.dart';
 import 'package:frontend_appflowershop/views/widgets/payment/vnpayview.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});

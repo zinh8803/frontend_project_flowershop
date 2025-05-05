@@ -12,10 +12,15 @@ class OrderDetailInitial extends OrderDetailState {}
 
 class OrderDetailLoading extends OrderDetailState {}
 
+class OrderDetailUpdating extends OrderDetailState {}
+
 class OrderDetailLoaded extends OrderDetailState {
   final OrdergetuserModel orders;
 
-  OrderDetailLoaded(this.orders);
+  const OrderDetailLoaded(this.orders);
+
+  @override
+  List<Object> get props => [orders];
 }
 
 class OrderDetailError extends OrderDetailState {

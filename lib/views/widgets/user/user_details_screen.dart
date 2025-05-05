@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/avatar/avatar_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/avatar/avatar_event.dart';
 import 'package:frontend_appflowershop/bloc/user/avatar/avatar_state.dart';

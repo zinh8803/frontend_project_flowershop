@@ -1,4 +1,3 @@
-// Model cho danh sách đơn hàng (giữ nguyên)
 class OrdergetuserModel {
   final int id;
   final int userId;
@@ -51,7 +50,6 @@ class OrdergetuserModel {
   }
 }
 
-// Model cho chi tiết đơn hàng
 class OrderDetailModel {
   final int id;
   final int userId;
@@ -149,10 +147,10 @@ class ProductModel {
   final String? description;
   final double price;
   final int stock;
-  final String imageUrl;
+  final double finalPrice;
+  final bool isDiscounted;
   final int categoryId;
-  final String createdAt;
-  final String updatedAt;
+  final String imageUrl;
 
   ProductModel({
     required this.id,
@@ -160,23 +158,23 @@ class ProductModel {
     this.description,
     required this.price,
     required this.stock,
-    required this.imageUrl,
+    required this.finalPrice,
+    required this.isDiscounted,
     required this.categoryId,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.imageUrl,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      price: double.parse(json['price']),
-      stock: json['stock'],
-      imageUrl: json['image_url'],
-      categoryId: json['category_id'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      id: json['id'] as int,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      price: double.tryParse(json['price'].toString()) ?? 0.0,
+      stock: json['stock'] as int,
+      finalPrice: double.tryParse(json['final_price'].toString()) ?? 0.0,
+      isDiscounted: json['is_discounted'] as bool,
+      categoryId: json['category_id'] as int,
+      imageUrl: json['image_url'] as String,
     );
   }
 }

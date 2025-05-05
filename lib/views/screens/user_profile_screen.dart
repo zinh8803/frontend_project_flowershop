@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_get_user/order_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_bloc.dart';
 import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_event.dart';
@@ -7,6 +8,7 @@ import 'package:frontend_appflowershop/bloc/user/user_profile/user_profile_state
 import 'package:frontend_appflowershop/data/services/Order/api_order.dart';
 import 'package:frontend_appflowershop/views/screens/login_screen.dart';
 import 'package:frontend_appflowershop/views/screens/order_screen.dart';
+import 'package:frontend_appflowershop/views/widgets/user/change_password_screen.dart';
 import 'package:frontend_appflowershop/views/widgets/user/user_details_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -125,10 +127,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     title: const Text('Hạng thành viên'),
                     trailing: const Text('Chưa xếp hạng'),
                   ),
+                  ListTile(
+                    leading:
+                        const Icon(Icons.password_outlined, color: Colors.red),
+                    title: const Text('Đổi mật khẩu'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChangePasswordScreen(),
+                        ),
+                      );
+                    },
+                  ),
                   const Divider(),
                   ListTile(
                     leading: const Icon(Icons.receipt, color: Colors.red),
-                    title: const Text('Đơn hàng của tui'),
+                    title: const Text('Đơn hàng của tôi'),
                     onTap: () {
                       Navigator.push(
                           context,
@@ -176,6 +191,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: ElevatedButton(
                       onPressed: () {
+                        //      context.read<CartBloc>().add(ClearCartEventall());
                         context.read<UserProfileBloc>().add(LogoutEvent());
                       },
                       style: ElevatedButton.styleFrom(

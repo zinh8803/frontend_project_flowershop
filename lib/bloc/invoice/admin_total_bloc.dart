@@ -27,7 +27,6 @@ class AdminTotalBloc extends Bloc<AdminTotalEvent, AdminTotalState> {
       developer.log(
           '[AdminTotalBloc] Invoices fetched successfully: ${invoices.length} invoices');
 
-      // Tạo danh sách tháng từ dữ liệu hóa đơn
       final availableMonths = _generateAvailableMonths(invoices);
       if (availableMonths.isEmpty) {
         emit(AdminTotalLoaded(
@@ -40,7 +39,6 @@ class AdminTotalBloc extends Bloc<AdminTotalEvent, AdminTotalState> {
         return;
       }
 
-      // Chọn tháng cuối cùng (mới nhất) làm mặc định
       final latestMonth = availableMonths.last;
       final availableWeeks = _generateAvailableWeeks(latestMonth);
 
@@ -63,7 +61,6 @@ class AdminTotalBloc extends Bloc<AdminTotalEvent, AdminTotalState> {
       final currentState = state as AdminTotalLoaded;
       developer.log('[AdminTotalBloc] Changing month to: ${event.month}');
 
-      // Tạo danh sách tuần cho tháng mới
       final availableWeeks = _generateAvailableWeeks(event.month);
 
       emit(AdminTotalLoaded(
@@ -91,7 +88,6 @@ class AdminTotalBloc extends Bloc<AdminTotalEvent, AdminTotalState> {
     }
   }
 
-  // Tạo danh sách tháng từ dữ liệu hóa đơn
   List<String> _generateAvailableMonths(List<Invoice> invoices) {
     final months = <String>{};
     for (var invoice in invoices) {
@@ -102,7 +98,6 @@ class AdminTotalBloc extends Bloc<AdminTotalEvent, AdminTotalState> {
     return sortedMonths;
   }
 
-  // Tạo danh sách tuần cho một tháng cụ thể
   List<String> _generateAvailableWeeks(String month) {
     if (month.isEmpty) return [];
     final yearMonth = month.split('-');

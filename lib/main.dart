@@ -8,8 +8,11 @@ import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_completed/order_completed_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_get_user/order_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_pending/order_pending_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_processing/order_processing_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_detail/product_detail_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list/product_bloc.dart';
 import 'package:frontend_appflowershop/bloc/product/product_list_discount/product_list_discount_bloc.dart';
@@ -122,6 +125,15 @@ class MyApp extends StatelessWidget {
             create: (context) => OrderDetailBloc(orderService),
           ),
           BlocProvider(
+            create: (context) => OrderPendingBloc(orderService),
+          ),
+          BlocProvider(
+            create: (context) => OrderProcessingBloc(orderService),
+          ),
+          BlocProvider(
+            create: (context) => OrderCompletedBloc(orderService),
+          ),
+          BlocProvider(
             create: (context) => ProductOptionsBloc(),
           ),
         ],
@@ -149,7 +161,7 @@ class MyApp extends StatelessWidget {
                             return const AdminFlowerServiceScreen();
                           case 3:
                             print('Navigating to DeliveryScreen');
-                            return const DeliveryScreen();
+                            return DeliveryScreen();
                           default:
                             print('Navigating to RegularEmployeeScreen');
                             return const RegularEmployeeScreen();

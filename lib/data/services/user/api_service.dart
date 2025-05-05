@@ -33,6 +33,28 @@ class ApiService {
     }
   }
 
+  Future<void> changePassword({
+    required String newPassword,
+  }) async {
+    final token = await PreferenceService.getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.put(
+      Uri.parse('${Constants.baseUrl}/users/update-password'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'new_password': newPassword,
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Đổi mật khẩu thất bại: ${response.reasonPhrase}');
+    }
+  }
+
   Future<UserModel> register(String name, String email, String password) async {
     final String url = "${Constants.baseUrl}/register";
     final response = await http.post(

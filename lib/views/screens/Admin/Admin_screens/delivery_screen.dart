@@ -1,42 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_appflowershop/utils/preference_service.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_delivery/CompletedOrdersScreen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_delivery/PendingOrdersScreen.dart';
+import 'package:frontend_appflowershop/views/screens/Admin/Admin_delivery/ProcessingOrdersScreen.dart';
 
 class DeliveryScreen extends StatelessWidget {
   const DeliveryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nhân Viên Giao Hàng'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Nhân Viên Giao Hàng'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
                 PreferenceService.clearToken().then((_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Đăng xuất thành công')),
-                );
-              });
-              Navigator.pushReplacementNamed(context, '/login');
-            },
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Đăng xuất thành công')),
+                  );
+                  Navigator.pushReplacementNamed(context, '/login');
+                });
+              },
+            ),
+          ],
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Pending'),
+              Tab(text: 'Processing'),
+              Tab(text: 'Completed'),
+            ],
           ),
-        ],
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+        body: TabBarView(
           children: [
-            Text(
-              'Chào mừng Nhân Viên Giao Hàng',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Xem và quản lý danh sách đơn hàng cần giao.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
+            PendingOrdersScreen(),
+            ProcessingOrdersScreen(),
+            CompletedOrdersScreen(),
           ],
         ),
       ),

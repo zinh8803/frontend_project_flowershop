@@ -69,8 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    AdminFlowerServiceScreen()),
+                                // builder: (context) =>
+                                //     AdminFlowerServiceScreen()),
+                                builder: (context) => AdminTotalScreen()),
                           );
                         case 3:
                           Navigator.pushReplacement(
@@ -95,7 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content: Text("T789ài khoản hoặc mật khẩu không đúng")),
+                          content:
+                              Text("T789ài khoản hoặc mật khẩu không đúng")),
                     );
                   }
                 },

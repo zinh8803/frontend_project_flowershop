@@ -96,8 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content:
-                              Text("T789ài khoản hoặc mật khẩu không đúng")),
+                          content: Text("Tài khoản hoặc mật khẩu không đúng")),
                     );
                   }
                 },

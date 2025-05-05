@@ -151,7 +151,7 @@ class ApiService_product {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      return data['data']; // Trả về { "sizes": [], "colors": [] }
+      return data['data'];
     } else {
       throw Exception(
           'Không thể lấy danh sách tùy chọn: ${response.statusCode}');

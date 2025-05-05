@@ -6,6 +6,7 @@ import 'package:frontend_appflowershop/bloc/product/product_detail/product_detai
 import 'package:frontend_appflowershop/data/models/product.dart';
 import 'package:frontend_appflowershop/data/models/size.dart';
 import 'package:frontend_appflowershop/data/models/color.dart';
+import 'package:frontend_appflowershop/data/services/Product/product_options_service.dart';
 import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -18,18 +19,7 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  final List<SizeModel> _sizes = [
-    SizeModel(id: 1, name: 'Bó nhỏ', priceModifier: 0),
-    SizeModel(id: 2, name: 'Bó lớn', priceModifier: 50000),
-  ];
-
-  final List<ColorModel> _colors = [
-    ColorModel(id: 1, name: 'Xanh'),
-    ColorModel(id: 2, name: 'Đỏ'),
-    ColorModel(id: 3, name: 'Cam'),
-    ColorModel(id: 4, name: 'Trắng'),
-  ];
-
+  final ProductOptionsService _optionsService = ProductOptionsService();
   SizeModel? _selectedSize;
   List<ColorModel> _selectedColors = [];
   double _currentPrice = 0;
@@ -39,6 +29,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
+    _optionsService.fetchOptions(widget.productId);
     context
         .read<ProductDetailBloc>()
         .add(FetchProductDetailEvent(widget.productId));
@@ -48,20 +39,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (_product == null) return;
     _currentPrice = _product!.finalPrice;
     if (_selectedSize != null) {
-      if (_selectedSize!.id == 2) {
-        _currentPrice += _selectedSize!.priceModifier;
+      try {
+        final selectedSizeData =
+            _optionsService.sizes.firstWhere((s) => s.id == _selectedSize!.id);
+        _currentPrice += selectedSizeData.priceModifier;
+      } catch (e) {
+        print('Error updating price for size: $e');
       }
     }
     if (_selectedColors.length > 1) {
       _currentPrice += (_selectedColors.length - 1) * 10000;
     }
     _updateAddToCartState();
-    // print('Current Price: $_currentPrice');
   }
 
   void _updateAddToCartState() {
-    bool sizeSelected = _sizes.isEmpty || _selectedSize != null;
-    bool colorsSelected = _colors.isEmpty || _selectedColors.isNotEmpty;
+    bool sizeSelected = _optionsService.sizes.isEmpty || _selectedSize != null;
+    bool colorsSelected =
+        _optionsService.colors.isEmpty || _selectedColors.isNotEmpty;
     setState(() {
       _canAddToCart = sizeSelected && colorsSelected;
     });
@@ -127,12 +122,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           }
           if (state is ProductDetailLoaded) {
             _product = state.product;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _updatePrice();
-              _updateAddToCartState();
-            });
             if (_currentPrice == 0) {
               _currentPrice = _product!.price;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _updatePrice();
+                _updateAddToCartState();
+              });
             }
             return SingleChildScrollView(
               child: Column(
@@ -176,47 +171,54 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         const SizedBox(height: 16),
                         const Divider(),
                         const SizedBox(height: 16),
-                        if (_sizes.isNotEmpty) ...[
-                          const Text(
-                            'Kích thước',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8.0,
-                            children: _sizes
-                                .map((size) => ChoiceChip(
-                                      label: Text(size.name),
-                                      selected: _selectedSize == size,
-                                      onSelected: (selected) {
-                                        _selectSize(selected ? size : null);
-                                      },
-                                    ))
-                                .toList(),
-                          ),
-                          const SizedBox(height: 16),
-                        ],
-                        if (_colors.isNotEmpty) ...[
-                          const Text(
-                            'Màu sắc',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8.0,
-                            children: _colors
-                                .map((color) => FilterChip(
-                                      label: Text(color.name),
-                                      selected: _selectedColors.contains(color),
-                                      onSelected: (selected) {
-                                        _toggleColor(color);
-                                      },
-                                    ))
-                                .toList(),
-                          ),
-                          const SizedBox(height: 16),
+                        if (_optionsService.isLoading)
+                          const Center(child: CircularProgressIndicator())
+                        else if (_optionsService.error != null)
+                          Center(child: Text('Lỗi: ${_optionsService.error}'))
+                        else ...[
+                          if (_optionsService.sizes.isNotEmpty) ...[
+                            const Text(
+                              'Kích thước',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8.0,
+                              children: _optionsService.sizes
+                                  .map((size) => ChoiceChip(
+                                        label: Text(size.name),
+                                        selected: _selectedSize?.id == size.id,
+                                        onSelected: (selected) {
+                                          _selectSize(selected ? size : null);
+                                        },
+                                      ))
+                                  .toList(),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                          if (_optionsService.colors.isNotEmpty) ...[
+                            const Text(
+                              'Màu sắc',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8.0,
+                              children: _optionsService.colors
+                                  .map((color) => FilterChip(
+                                        label: Text(color.name),
+                                        selected:
+                                            _selectedColors.contains(color),
+                                        onSelected: (selected) {
+                                          _toggleColor(color);
+                                        },
+                                      ))
+                                  .toList(),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
                         ],
                         const Text(
                           'Mô tả sản phẩm',
@@ -240,7 +242,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ),
       bottomNavigationBar: BlocBuilder<ProductDetailBloc, ProductDetailState>(
         builder: (context, state) {
-          if (state is ProductDetailLoaded) {
+          if (state is ProductDetailLoaded && !_optionsService.isLoading) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(

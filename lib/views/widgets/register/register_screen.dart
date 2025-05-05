@@ -5,6 +5,7 @@ import 'package:frontend_appflowershop/bloc/auth/register/register_event.dart';
 import 'package:frontend_appflowershop/bloc/auth/register/register_state.dart';
 import 'package:frontend_appflowershop/data/services/user/api_service.dart'
     as userApiService;
+import 'package:frontend_appflowershop/utils/preference_service.dart';
 import 'package:frontend_appflowershop/views/screens/home_screen.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -22,10 +23,14 @@ class RegisterPage extends StatelessWidget {
         create: (context) =>
             RegisterBloc(context.read<userApiService.ApiService>()),
         child: BlocListener<RegisterBloc, RegisterState>(
-          listener: (context, state) {
-            print('Register state: $state'); 
+          listener: (context, state) async {
+            print('Register state: $state');
             if (state is RegisterSuccess) {
-              print('Navigating to HomeScreen'); 
+              await PreferenceService.saveToken(state.user.token);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Đăng ký thành công')),
+              );
+              print('Navigating to HomeScreen');
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomeScreen()),

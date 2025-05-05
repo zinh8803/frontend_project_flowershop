@@ -9,6 +9,7 @@ import 'package:frontend_appflowershop/bloc/category/category_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_completed/order_completed_bloc.dart';
+import 'package:frontend_appflowershop/bloc/order/order_completed/order_completed_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_get_user/order_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_pending/order_pending_bloc.dart';
@@ -48,7 +49,6 @@ class MyApp extends StatelessWidget {
 
   Future<dynamic> _checkTokenAndUser() async {
     try {
-      // Lấy token từ PreferenceService
       final token = await PreferenceService.getToken();
       if (token == null) {
         print('No token found');

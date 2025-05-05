@@ -7,7 +7,7 @@ class UserModel {
   final String? phoneNumber;
   final String? address;
   final bool? isLoggedIn;
-  final String lastLoginAt;
+  final String? lastLoginAt;
   final String createdAt;
   final String updatedAt;
   final String token;
@@ -21,7 +21,7 @@ class UserModel {
     this.phoneNumber,
     this.address,
     required this.isLoggedIn,
-    required this.lastLoginAt,
+    this.lastLoginAt,
     required this.createdAt,
     required this.updatedAt,
     required this.token,
@@ -38,7 +38,7 @@ class UserModel {
           json['phone_number'] == null ? '' : json['phone_number'].toString(),
       address: json['address'] == null ? '' : json['address'].toString(),
       isLoggedIn: json['is_logged_in'],
-      lastLoginAt: json['last_login_at'],
+      lastLoginAt: json['last_login_at'] as String? ?? '',
       createdAt: json['created_at'] as String? ?? '',
       updatedAt: json['updated_at'] as String? ?? '',
       token: token,
@@ -54,7 +54,7 @@ class UserModel {
       'phone_number': phoneNumber == null ? '' : phoneNumber.toString(),
       'address': address == null ? '' : address.toString(),
       'is_logged_in': isLoggedIn,
-      'last_login_at': lastLoginAt,
+      'last_login_at': lastLoginAt ?? '',
       'created_at': createdAt,
       'updated_at': updatedAt,
       'token': token,

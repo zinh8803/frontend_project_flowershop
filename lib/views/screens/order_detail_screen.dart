@@ -4,6 +4,7 @@ import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_event.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_state.dart';
 import 'package:frontend_appflowershop/data/models/ordergetuser.dart';
+import 'package:frontend_appflowershop/data/services/Product/product_options_service.dart';
 import 'package:intl/intl.dart';
 
 class OrderDetailScreen extends StatefulWidget {
@@ -16,17 +17,7 @@ class OrderDetailScreen extends StatefulWidget {
 }
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
-  final Map<int?, String> _sizeNameMap = {
-    1: 'Bó nhỏ',
-    2: 'Bó lớn',
-  };
-  final Map<int?, String> _colorNameMap = {
-    1: 'Đỏ',
-    2: 'Xanh',
-    3: 'Vàng',
-    4: 'Trắng',
-  };
-
+  final ProductOptionsService _optionsService = ProductOptionsService();
   @override
   void initState() {
     super.initState();
@@ -34,15 +25,25 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   String _getSizeName(OrderItemModel item) {
-    return _sizeNameMap[item.sizeId] ?? 'Không xác định';
+    try {
+      final size = _optionsService.sizes.firstWhere((s) => s.id == item.sizeId);
+      return size.name;
+    } catch (e) {
+      return 'Không xác định';
+    }
   }
 
   String _getColorName(OrderItemModel item) {
     if (item.colors != null && item.colors!.isNotEmpty) {
-      return item.colors!
-          .whereType<int>()
-          .map((colorId) => _colorNameMap[colorId] ?? 'Không xác định')
-          .join(', ');
+      try {
+        return item.colors!.whereType<int>().map((colorId) {
+          final color =
+              _optionsService.colors.firstWhere((c) => c.id == colorId);
+          return color.name;
+        }).join(', ');
+      } catch (e) {
+        return 'Không xác định';
+      }
     }
     print('Item colors: ${item.colors}');
     return 'Không có màu';

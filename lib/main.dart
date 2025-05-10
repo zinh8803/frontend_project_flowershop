@@ -8,6 +8,7 @@ import 'package:frontend_appflowershop/bloc/cart/cart_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_bloc.dart';
 import 'package:frontend_appflowershop/bloc/category/category_product/category_products_bloc.dart';
 import 'package:frontend_appflowershop/bloc/checkout/checkout_bloc.dart';
+import 'package:frontend_appflowershop/bloc/discount/discount_check_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_completed/order_completed_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_completed/order_completed_bloc.dart';
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
@@ -31,6 +32,8 @@ import 'package:frontend_appflowershop/data/services/Product/api_product.dart'
 import 'package:frontend_appflowershop/data/services/cart/cart_service.dart';
 import 'package:frontend_appflowershop/data/services/user/api_service.dart'
     as userApiService;
+import 'package:frontend_appflowershop/data/services/discount/api_discount.dart'
+    as discountApiService;
 import 'package:frontend_appflowershop/utils/preference_service.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_flower_service_screen.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/admin_total_screen.dart';
@@ -73,6 +76,7 @@ class MyApp extends StatelessWidget {
     final cartService = CartService();
     final orderService = orderApiService.ApiOrderService();
     final vnpayService = ApiService_payment();
+    final discountService = discountApiService.DiscountService();
 
     return MultiRepositoryProvider(
       providers: [
@@ -81,6 +85,7 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(create: (context) => categoryApi),
         RepositoryProvider(create: (context) => productApi),
         RepositoryProvider(create: (context) => orderService),
+        RepositoryProvider(create: (context) => discountService),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -132,6 +137,10 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => OrderCompletedBloc(orderService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                DiscountCheckBloc(discountCheckService: discountService),
           ),
           BlocProvider(
             create: (context) => ProductOptionsBloc(),

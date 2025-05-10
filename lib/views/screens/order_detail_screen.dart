@@ -89,6 +89,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   _buildInfoRow('Số điện thoại', order.phoneNumber),
                   _buildInfoRow('Địa chỉ', order.address),
                   _buildInfoRow('Phương thức thanh toán', order.paymentMethod),
+                  if (order.discount != null)
+                    _buildInfoRow('Khuyến mãi',
+                        '${order.discount!.type} (${order.discount!.value}${order.discount!.type == 'percentage' ? '%' : ' VNĐ'})'),
                   const SizedBox(height: 16),
                   const Text(
                     'Sản phẩm:',

@@ -11,7 +11,7 @@ class LoadCheckoutDataEvent extends CheckoutEvent {}
 class PlaceOrderEvent extends CheckoutEvent {
   final int userId;
   final String name;
-  final String? discount_Id;
+  final int? discount_Id;
   final String email;
   final String phoneNumber;
   final String address;

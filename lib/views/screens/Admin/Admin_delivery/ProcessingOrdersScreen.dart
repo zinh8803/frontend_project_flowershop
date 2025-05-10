@@ -6,7 +6,6 @@ import 'package:frontend_appflowershop/bloc/order/order_processing/order_process
 import 'package:frontend_appflowershop/bloc/order/order_processing/order_processing_state.dart';
 import 'package:frontend_appflowershop/data/services/Order/api_order.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/OrderDetailProcessingScreen.dart';
-import 'package:frontend_appflowershop/views/screens/order_detail_screen.dart';
 import 'package:intl/intl.dart';
 
 class ProcessingOrdersScreen extends StatefulWidget {

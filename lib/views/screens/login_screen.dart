@@ -83,11 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RegularEmployeeScreen()),
+                                builder: (context) => DeliveryScreen()),
                           );
                       }
                     } else {
-                      // Điều hướng đến trang khách hàng
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => HomeScreen()),

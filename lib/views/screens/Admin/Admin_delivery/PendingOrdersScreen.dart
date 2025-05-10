@@ -6,7 +6,7 @@ import 'package:frontend_appflowershop/bloc/order/order_pending/order_pending_ev
 import 'package:frontend_appflowershop/bloc/order/order_pending/order_pending_state.dart';
 import 'package:frontend_appflowershop/data/services/Order/api_order.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/OrderDetailPendingScreen.dart';
-import 'package:frontend_appflowershop/views/screens/order_detail_screen.dart';
+
 import 'package:intl/intl.dart';
 
 class PendingOrdersScreen extends StatefulWidget {

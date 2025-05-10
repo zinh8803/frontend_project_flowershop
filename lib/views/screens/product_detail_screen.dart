@@ -25,6 +25,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   double _currentPrice = 0;
   bool _canAddToCart = false;
   ProductModel? _product;
+  // ProductDetailBloc? _productDetailBloc;
 
   @override
   void initState() {
@@ -33,7 +34,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     context
         .read<ProductDetailBloc>()
         .add(FetchProductDetailEvent(widget.productId));
+    _currentPrice = 0;
+    print('initState: _currentPrice: $_currentPrice');
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   // Lấy tham chiếu đến Bloc khi dependencies của widget thay đổi
+  //   _productDetailBloc = context.read<ProductDetailBloc>();
+  // }
+
+  // @override
+  // void dispose() {
+  //   _selectedSize = null;
+  //   _selectedColors.clear();
+  //   _currentPrice = 0;
+  //   _canAddToCart = false;
+  //   _product = null;
+
+  //   _productDetailBloc?.add(ResetProductDetailEvent());
+  //   _productDetailBloc = null; // Giải phóng tham chiếu
+
+  //   super.dispose();
+  //   print('dispose: Trạng thái đã được reset');
+  // }
 
   void _updatePrice() {
     if (_product == null) return;
@@ -122,6 +147,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           }
           if (state is ProductDetailLoaded) {
             _product = state.product;
+            //_currentPrice = 0;
+            print(
+                'BlocBuilder - ProductDetailLoaded1: _product?.finalPrice: ${_currentPrice}');
+
             if (_currentPrice == 0) {
               _currentPrice = _product!.price;
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -154,14 +183,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'SP0${_product!.id}',
-                          style:
-                              const TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
+                        // Text(
+                        //   'SP0${_product!.id}',
+                        //   style:
+                        //       const TextStyle(fontSize: 16, color: Colors.grey),
+                        // ),
                         const SizedBox(height: 8),
                         Text(
-                          '${_currentPrice.toStringAsFixed(0)}đ',
+                          _selectedSize != null || _selectedColors.isNotEmpty
+                              ? '${_currentPrice.toStringAsFixed(0)}đ'
+                              : (_product?.finalPrice != null
+                                  ? '${_product!.finalPrice.toStringAsFixed(0)}đ'
+                                  : '${_product?.price.toStringAsFixed(0)}đ'),
                           style: const TextStyle(
                             fontSize: 20,
                             color: Colors.red,

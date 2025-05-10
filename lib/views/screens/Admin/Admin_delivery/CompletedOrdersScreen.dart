@@ -6,8 +6,7 @@ import 'package:frontend_appflowershop/bloc/order/order_completed/order_complete
 import 'package:frontend_appflowershop/bloc/order/order_detail/order_detail_bloc.dart';
 import 'package:frontend_appflowershop/data/services/Order/api_order.dart';
 import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/OrderDetailCompleteScreen.dart';
-import 'package:frontend_appflowershop/views/screens/Admin/Admin_screens/OrderDetailProcessingScreen.dart';
-import 'package:frontend_appflowershop/views/screens/order_detail_screen.dart';
+
 import 'package:intl/intl.dart';
 
 class CompletedOrdersScreen extends StatefulWidget {

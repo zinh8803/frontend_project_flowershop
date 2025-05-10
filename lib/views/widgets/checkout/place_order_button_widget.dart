@@ -15,6 +15,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
   final String paymentMethod;
   final List<CartItem> cartItems;
   final double totalPrice;
+  final int? discountId;
 
   const PlaceOrderButtonWidget({
     super.key,
@@ -27,6 +28,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
     required this.paymentMethod,
     required this.cartItems,
     required this.totalPrice,
+    this.discountId,
   });
 
   @override
@@ -45,7 +47,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                           userId: int.parse(userId),
                           name: nameController.text,
                           email: emailController.text,
-                          discount_Id: '',
+                          discount_Id: discountId,
                           phoneNumber: phoneController.text,
                           address: addressController.text,
                           paymentMethod: paymentMethod,

@@ -1,3 +1,5 @@
+import 'package:frontend_appflowershop/data/models/order.dart';
+
 class OrdergetuserModel {
   final int id;
   final int userId;
@@ -10,7 +12,7 @@ class OrdergetuserModel {
   final String paymentMethod;
   final String createdAt;
   final String updatedAt;
-  final String? discount;
+  final DiscountModel? discount;
   final List<OrderItemModel> orderItems;
 
   OrdergetuserModel({
@@ -42,7 +44,9 @@ class OrdergetuserModel {
       paymentMethod: json['payment_method'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      discount: json['discount'],
+      discount: json['discount'] is Map<String, dynamic>
+          ? DiscountModel.fromJson(json['discount'])
+          : null,
       orderItems: (json['order_items'] as List)
           .map((item) => OrderItemModel.fromJson(item))
           .toList(),
@@ -62,7 +66,7 @@ class OrderDetailModel {
   final String paymentMethod;
   final String createdAt;
   final String updatedAt;
-  final String? discount;
+  final DiscountModel? discount;
   final List<OrderItemModel> orderItems;
 
   OrderDetailModel({
@@ -94,7 +98,9 @@ class OrderDetailModel {
       paymentMethod: json['payment_method'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      discount: json['discount'],
+      discount: json['discount'] is Map<String, dynamic>
+          ? DiscountModel.fromJson(json['discount'])
+          : null,
       orderItems: (json['order_items'] as List)
           .map((item) => OrderItemModel.fromJson(item))
           .toList(),

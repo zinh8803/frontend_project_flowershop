@@ -34,6 +34,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   late TextEditingController _addressController;
   String _paymentMethod = 'cash';
   bool _isPaymentProcessing = false;
+  double _discountedTotalPrice = 0.0;
+  int? _appliedDiscountId;
 
   @override
   void initState() {
@@ -52,6 +54,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _phoneController.dispose();
     _addressController.dispose();
     super.dispose();
+  }
+
+  void _handleDiscountApplied(double newPrice, int discountId) {
+    setState(() {
+      _discountedTotalPrice = newPrice;
+      _appliedDiscountId = discountId;
+    });
   }
 
   @override
@@ -95,7 +104,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 .id
                                 .toString()),
                             name: _nameController.text,
-                            discount_Id: '',
+                            discount_Id: _appliedDiscountId,
                             email: _emailController.text,
                             phoneNumber: _phoneController.text,
                             address: _addressController.text,
@@ -127,8 +136,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           if (userState is UserProfileLoaded) {
             final user = userState.user;
 
-            print('User ID from UserProfileBloc: ${user.id}');
-
             _nameController.text = user.name;
             _emailController.text = user.email;
             _phoneController.text = user.phoneNumber ?? '';
@@ -142,6 +149,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 if (cartState is CartLoaded) {
                   final cartItems = cartState.cartItems;
                   final totalPrice = cartState.totalPrice;
+                  final displayedPrice = _discountedTotalPrice > 0
+                      ? _discountedTotalPrice
+                      : totalPrice;
 
                   return Scaffold(
                     appBar: AppBar(
@@ -162,7 +172,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   children: [
                                     const SizedBox(height: 8),
                                     CartItemsWidget(cartItems: cartItems),
-                                    SummaryWidget(totalPrice: totalPrice),
+                                    SummaryWidget(totalPrice: displayedPrice),
                                     CustomerInfoFormWidget(
                                       nameController: _nameController,
                                       emailController: _emailController,
@@ -172,15 +182,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     PaymentMethodWidget(
                                       paymentMethod: _paymentMethod,
                                       onChanged: (value) {
-                                        print(
-                                            'Updating payment method to: $value');
                                         setState(() {
                                           _paymentMethod = value ?? 'cash';
                                         });
                                       },
                                     ),
-                                    const PromotionWidget(),
-                                    const NoteWidget(),
+                                    PromotionWidget(
+                                      id: user.id,
+                                      orderTotal: totalPrice,
+                                      onDiscountApplied: _handleDiscountApplied,
+                                    ),
                                     PlaceOrderButtonWidget(
                                       formKey: _formKey,
                                       userId: user.id.toString(),
@@ -190,7 +201,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       addressController: _addressController,
                                       paymentMethod: _paymentMethod,
                                       cartItems: cartItems,
-                                      totalPrice: totalPrice,
+                                      totalPrice: displayedPrice,
+                                      discountId: _appliedDiscountId,
                                     ),
                                   ],
                                 ),

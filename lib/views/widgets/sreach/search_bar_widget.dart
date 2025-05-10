@@ -22,10 +22,8 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   }
 
   void _onSearch(String query) {
-    // Loại bỏ khoảng trắng ở đầu và cuối
     query = query.trim();
     if (query.isEmpty) {
-      // Không gửi sự kiện tìm kiếm nếu từ khóa rỗng
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Vui lòng nhập từ khóa tìm kiếm'),
@@ -34,9 +32,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       );
       return;
     }
-    // Gửi sự kiện tìm kiếm nếu từ khóa không rỗng
     context.read<SearchBloc>().add(SearchProductsEvent(query));
-    // Gọi callback để điều hướng đến tab Search
     if (widget.onSearch != null) {
       widget.onSearch!();
     }

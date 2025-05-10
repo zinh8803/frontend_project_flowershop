@@ -12,7 +12,7 @@ class ApiOrderService {
   Future<OrderModel> placeOrder({
     required int userId,
     required String name,
-    String? discount_id,
+    int? discount_id,
     required String email,
     required String phoneNumber,
     required String address,
@@ -32,11 +32,11 @@ class ApiOrderService {
         .values
         .toList();
 
-    print('Products List Input: $productsList'); // In ra productsList
+    print('Products List Input: $productsList');
 
     final body = jsonEncode({
       'user_id': userId,
-      'discount_id': "",
+      'discount_id': discount_id,
       'name': name,
       'email': email,
       'phone_number': phoneNumber,
@@ -45,7 +45,7 @@ class ApiOrderService {
       'products': productsList,
     });
 
-    print('Request body: $body');
+    print('Request body111: $body');
 
     final response = await http.post(
       Uri.parse(url),

@@ -5,3 +5,7 @@ class FetchProductDetailEvent extends ProductDetailEvent {
 
   FetchProductDetailEvent(this.productId);
 }
+class ResetProductDetailEvent extends ProductDetailEvent {
+  @override
+  List<Object?> get props => [];
+}

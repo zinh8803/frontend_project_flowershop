@@ -7,14 +7,27 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   final ApiService_product apiService;
 
   ProductDetailBloc(this.apiService) : super(ProductDetailInitial()) {
-    on<FetchProductDetailEvent>((event, emit) async {
-      emit(ProductDetailLoading());
-      try {
-        final product = await apiService.getProductDetail(event.productId);
-        emit(ProductDetailLoaded(product));
-      } catch (e) {
-        emit(ProductDetailError(e.toString()));
-      }
-    });
+    on<FetchProductDetailEvent>(_onFetchProductDetail);
+    on<ResetProductDetailEvent>(_onResetProductDetail);
+  }
+
+  Future<void> _onFetchProductDetail(
+    FetchProductDetailEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
+    emit(ProductDetailLoading());
+    try {
+      final product = await apiService.getProductDetail(event.productId);
+      emit(ProductDetailLoaded(product));
+    } catch (e) {
+      emit(ProductDetailError(e.toString()));
+    }
+  }
+
+  void _onResetProductDetail(
+    ResetProductDetailEvent event,
+    Emitter<ProductDetailState> emit,
+  ) {
+    emit(ProductDetailInitial());
   }
 }

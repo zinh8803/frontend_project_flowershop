@@ -9,7 +9,7 @@ class OrderModel {
   final String? email;
   final String? created_at;
   final String? updated_at;
-  final String? discount;
+  final DiscountModel? discount;
   final String? payment_method;
 
   OrderModel({
@@ -39,8 +39,33 @@ class OrderModel {
       email: json['email'],
       created_at: json['created_at'],
       updated_at: json['updated_at'],
-      discount: json['discount'] ?? '0',
+      discount: json['discount'] is Map<String, dynamic>
+          ? DiscountModel.fromJson(json['discount'])
+          : null,
       payment_method: json['payment_method'] ?? 'pending',
+    );
+  }
+}
+
+class DiscountModel {
+  final int id;
+  final String code;
+  final String type;
+  final String value;
+
+  DiscountModel({
+    required this.id,
+    required this.code,
+    required this.type,
+    required this.value,
+  });
+
+  factory DiscountModel.fromJson(Map<String, dynamic> json) {
+    return DiscountModel(
+      id: json['id'],
+      code: json['code'],
+      type: json['type'],
+      value: json['value'],
     );
   }
 }

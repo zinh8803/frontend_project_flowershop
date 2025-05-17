@@ -13,6 +13,7 @@ class ProductModel {
   final String imageUrl;
   final List<SizeModel>? sizes; // Thêm sizes
   final List<ColorModel>? colors;
+  final List<IngredientModel>? ingredients;
   ProductModel({
     required this.id,
     required this.name,
@@ -25,6 +26,7 @@ class ProductModel {
     required this.imageUrl,
     this.sizes,
     this.colors,
+    this.ingredients,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,11 @@ class ProductModel {
       colors: json['colors'] != null
           ? (json['colors'] as List)
               .map((color) => ColorModel.fromJson(color))
+              .toList()
+          : null,
+      ingredients: json['ingredients'] != null
+          ? (json['ingredients'] as List)
+              .map((ingredient) => IngredientModel.fromJson(ingredient))
               .toList()
           : null,
     );
@@ -75,6 +82,26 @@ class ProductModel {
       imageUrl: imageUrl ?? this.imageUrl,
       sizes: sizes ?? this.sizes,
       colors: colors ?? this.colors,
+    );
+  }
+}
+
+class IngredientModel {
+  final int id;
+  final int productId; // Thêm product_id để phản ánh khóa ngoại
+  final String? description;
+
+  IngredientModel({
+    required this.id,
+    required this.productId,
+    this.description,
+  });
+
+  factory IngredientModel.fromJson(Map<String, dynamic> json) {
+    return IngredientModel(
+      id: json['id'],
+      productId: json['product_id'],
+      description: json['description'],
     );
   }
 }

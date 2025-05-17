@@ -251,6 +251,46 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   .toList(),
                             ),
                             const SizedBox(height: 16),
+                            const Text(
+                              'Thành phần',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            _product?.ingredients != null &&
+                                    _product!.ingredients!.isNotEmpty
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: (_product?.ingredients ?? [])
+                                        .map((ingredient) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                                Icons.fiber_manual_record,
+                                                size: 10,
+                                                color: Colors.grey),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                '${ingredient.description != null ? '${ingredient.description}' : ''}',
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  )
+                                : const Text(
+                                    'Không có thông tin thành phần',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                            const SizedBox(height: 16),
                           ],
                         ],
                         const Text(

@@ -88,19 +88,16 @@ class ProductModel {
 
 class IngredientModel {
   final int id;
-  final int productId; // Thêm product_id để phản ánh khóa ngoại
   final String? description;
 
   IngredientModel({
     required this.id,
-    required this.productId,
     this.description,
   });
 
   factory IngredientModel.fromJson(Map<String, dynamic> json) {
     return IngredientModel(
       id: json['id'],
-      productId: json['product_id'],
       description: json['description'],
     );
   }
